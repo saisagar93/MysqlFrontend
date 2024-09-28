@@ -6,9 +6,9 @@ import './ModifyRecords.css';
 
 const ModifyRecords = () => {
     const navigate = useNavigate();
-    const [records, setRecords] = useState([]);
+    //const [records, setRecords] = useState([]);
     const [filteredRecords, setFilteredRecords] = useState([]);
-    const [selectedRecord, setSelectedRecord] = useState(null);
+    //const [selectedRecord, setSelectedRecord] = useState(null);
     const [formData, setFormData] = useState({
         tracker: '',
         sjm: '',

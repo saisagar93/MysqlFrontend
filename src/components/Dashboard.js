@@ -99,12 +99,12 @@ const Dashboard = () => {
 
         const intervalId = setInterval(() => {
             fetchData();
-        }, 180000); // Fetch every 3 minutes
+        }, 180000); 
 
         return () => {
             clearInterval(intervalId);
         };
-    }, [navigate, calculateCardCounts]);
+    }, [navigate, calculateCardCounts,fetchData]);
 
     useEffect(() => {
         const timerId = setInterval(() => {
@@ -118,7 +118,7 @@ const Dashboard = () => {
         }, 1000); // Decrease timer every second
 
         return () => clearInterval(timerId);
-    }, []);
+    }, [fetchData]);
 
     useEffect(() => {
         const journeyDetails = filteredRecords;
@@ -182,7 +182,7 @@ const Dashboard = () => {
                 case 'critical':
                     return minutesSinceLastCheck > 120 && !["Done", "DONE", "done"].includes(item.REMARKS) && !["closed", "CLOSED", "Closed"].includes(item.JP_STATUS);
                 case 'due':
-                    return (minutesSinceLastCheck > 60 && minutesSinceLastCheck < 120) || isNaN(minutesSinceLastCheck) && !["closed", "CLOSED", "Closed"].includes(item.JP_STATUS) && !["Done", "DONE", "done"].includes(item.REMARKS);
+                    return (minutesSinceLastCheck > 60 && minutesSinceLastCheck < 120) && !["closed", "CLOSED", "Closed"].includes(item.JP_STATUS) && !["Done", "DONE", "done"].includes(item.REMARKS);
                 case 'stopped':
                     return ["Done", "DONE", "done"].includes(item.REMARKS) && !["closed", "CLOSED", "Closed"].includes(item.JP_STATUS);
                 default:
