@@ -6,9 +6,9 @@ import './ModifyRecords.css';
 
 const ModifyRecords = () => {
     const navigate = useNavigate();
-    const [records, setRecords] = useState([]);
+    //const [records, setRecords] = useState([]);
     const [filteredRecords, setFilteredRecords] = useState([]);
-    const [selectedRecord, setSelectedRecord] = useState(null);
+    //const [selectedRecord, setSelectedRecord] = useState(null);
     const [formData, setFormData] = useState({
         tracker: '',
         sjm: '',
@@ -45,7 +45,7 @@ const ModifyRecords = () => {
         try {
             const response = await axios.get(`${process.env.REACT_APP_BASE_API_URL}/dashboard`, { withCredentials: true });
             const filtered = response.data.filter(item => item.JP_STATUS !== 'CLOSED');
-            setRecords(response.data);
+           // setRecords(response.data);
             setFilteredRecords(filtered.slice(0, 18)); // Limit to 18 records
         } catch (error) {
             console.error('Error fetching records:', error);
@@ -53,7 +53,7 @@ const ModifyRecords = () => {
     };
 
     const handleSelect = (record) => {
-        setSelectedRecord(record);
+        //setSelectedRecord(record);
         setFormData({
             tracker: record.TRACKER || '',
             sjm: record.SJM || '',
@@ -95,7 +95,7 @@ const ModifyRecords = () => {
             await axios.put(`${process.env.REACT_APP_BASE_API_URL}/modifyRecord/${formData.journey_Plane_No}`, formData, { withCredentials: true });
             await fetchRecords();
             setMessage('Record updated successfully!');
-            setSelectedRecord(null);
+            //setSelectedRecord(null);
             setIsEditing(false);
         } catch (error) {
             console.error('Error updating record:', error);
@@ -108,7 +108,7 @@ const ModifyRecords = () => {
             await axios.delete(`${process.env.REACT_APP_BASE_API_URL}/deleteRecord/${formData.journey_Plane_No}`, { withCredentials: true });
             setMessage('Record deleted successfully!');
             await fetchRecords();
-            setSelectedRecord(null);
+            //setSelectedRecord(null);
             setIsEditing(false);
         } catch (error) {
             console.error('Error deleting record:', error);
