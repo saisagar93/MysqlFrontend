@@ -1,0 +1,136 @@
+/* General wrapper styles */
+.modify-records-wrapper {
+    padding: 20px;
+    font-family: Arial, sans-serif; /* Updated font for the whole wrapper */
+}
+
+/* Header styles */
+.modify-records-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.modify-button-group {
+    display: flex;
+    gap: 10px; /* Space between buttons */
+}
+
+/* Button styles */
+.modify-btn {
+    padding: 8px 12px; /* Adjusted padding */
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px; /* Adjusted font size */
+    transition: background-color 0.3s; /* Smooth transition for hover effects */
+}
+
+/* Primary Button (Update) */
+.modify-btn-primary {
+    background-color: #28a745; /* Green */
+    color: white;
+}
+
+.modify-btn-primary:hover {
+    background-color: #218838; /* Darker green on hover */
+}
+
+/* Danger Button (Delete) */
+.modify-btn-danger {
+    background-color: #dc3545; /* Red */
+    color: white;
+}
+
+.modify-btn-danger:hover {
+    background-color: #c82333; /* Darker red on hover */
+}
+
+.modify-btn-secondary {
+    background-color: grey; /* Red */
+    color: white;
+}
+
+.modify-btn-secondary:hover {
+    background-color:darkgray; /* Darker red on hover */
+}
+
+/* Info Button (Edit) */
+.modify-btn-info {
+    background-color: #17a2b8; /* Teal */
+    color: white;
+}
+
+.modify-btn-info:hover {
+    background-color: #138496; /* Darker teal on hover */
+}
+
+/* Form styles */
+.modify-edit-form {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* Two columns for desktop */
+    gap: 10px; /* Reduced gap */
+}
+
+.modify-form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.modify-form-label {
+    font-weight: bold;
+    margin-bottom: 5px;
+    font-size: 14px; /* Increased font size for labels */
+    color: #333; /* Dark color for better contrast */
+}
+
+/* Input and select styles */
+.modify-form-control {
+    padding: 6px; /* Reduced padding */
+    border: 1px solid #ccc; /* Light gray border */
+    border-radius: 4px;
+    box-sizing: border-box; /* Include padding in width */
+    font-size: 14px; /* Adjusted font size for inputs */
+}
+
+/* Table styles */
+.modify-record-table-container {
+    max-height: 400px; /* Height for scrolling */
+    overflow-y: auto; /* Enable scrolling */
+    margin-top: 20px; /* Space above the table */
+}
+
+.modify-record-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.modify-record-table th,
+.modify-record-table td {
+    border: 1px solid #ccc;
+    padding: 6px; /* Adjusted padding for table cells */
+    text-align: left;
+    font-size: 14px; /* Consistent font size for table cells */
+}
+
+.modify-record-table th {
+    background-color: #f2f2f2; /* Light gray background */
+}
+
+/* Success and error message styles */
+.modify-message {
+    color: green; /* Default success color */
+    margin-top: 10px;
+    font-size: 14px; /* Adjusted font size for messages */
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+    .modify-edit-form {
+        grid-template-columns: 1fr; /* One column for mobile */
+    }
+
+    .modify-button-group-main {
+        flex-direction: column; /* Stack buttons on mobile */
+    }
+}

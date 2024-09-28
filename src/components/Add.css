@@ -1,0 +1,101 @@
+/* General container styles */
+.containeradd {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 20px;
+    max-width: 1200px; /* Adjust as needed */
+    margin: auto;
+}
+
+/* Form styles */
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* Two columns for desktop */
+    gap: 10px; /* Space between grid items */
+    width: 100%;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+    .form-grid {
+        grid-template-columns: 1fr; /* One column for mobile */
+    }
+}
+
+/* Label styles */
+.form-label-addrecord {
+    font-weight: bold; /* Makes the label text bold */
+    margin-bottom: 5px; /* Space below the label */
+}
+
+.required {
+    color: red; /* Red color for required asterisk */
+    margin-left: 2px; /* Space between label and asterisk */
+}
+
+/* Input styles */
+.form-input-addrecord,
+.form-select-addrecord {
+    width: 100%; /* Full width for input and select fields */
+    padding: 8px; /* Reduced padding for a slimmer look */
+    border: 1px solid #ccc; /* Light gray border */
+    border-radius: 4px; /* Slightly rounded corners */
+    box-sizing: border-box; /* Include padding in width */
+}
+
+/* Textarea styles */
+.form-textarea-addrecord {
+    width: 100%;
+    height: 80px; /* Fixed height for textarea */
+    padding: 8px; /* Padding for comfort */
+    border: 1px solid #ccc; /* Light gray border */
+    border-radius: 4px; /* Slightly rounded corners */
+}
+
+/* Button styles */
+.submit-button-addrecord {
+    background-color: #007bff; /* Blue background */
+    color: white; /* White text */
+    padding: 10px; /* Padding for button */
+    border: none; /* No border */
+    border-radius: 4px; /* Slightly rounded corners */
+    cursor: pointer; /* Pointer cursor on hover */
+    grid-column: span 2; /* Make the button span both columns */
+    margin-top: 10px; /* Space above the button */
+}
+
+.submit-button-addrecord:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+}
+
+/* Message styles */
+.message-addrecord {
+    color: green; /* Green color for success message */
+    margin-top: 10px; /* Space above the message */
+}
+
+/* Error message style (if needed) */
+.error-addrecord {
+    color: red; /* Red color for error messages */
+    margin-top: 10px; /* Space above the message */
+}
+
+/* Additional responsive styles */
+@media (max-width: 768px) {
+    .containeradd {
+        padding: 10px; /* Less padding on mobile */
+    }
+    
+    .form-input-addrecord,
+    .form-select-addrecord,
+    .form-textarea-addrecord {
+        padding: 10px; /* Adjust padding for mobile comfort */
+        width: 90%;
+
+    }
+
+    .submit-button-addrecord {
+        margin-top: 5px; /* Less space above the button on mobile */
+    }
+}

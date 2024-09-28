@@ -1,0 +1,80 @@
+.containermainpage {
+    max-width: 1000px; /* Maximum width for the container */
+    margin: 10px auto; /* Centering the container */
+    padding: 20px; /* Padding inside the container */
+    background-color: #f4f4f4; /* Light background color */
+    border-radius: 10px; /* Rounded corners */
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+}
+
+.row {
+    display: flex; /* Flexbox for layout */
+    flex-direction: column; /* Arrange buttons vertically */
+    justify-content: center; /* Center buttons vertically */
+    align-items: stretch; /* Stretch buttons to full width */
+}
+
+.col {
+    margin: 5px 0; /* Vertical margin for buttons */
+}
+
+.btn {
+    width: 100%; /* Full width for buttons */
+    height: 40px;
+    margin-bottom: 20px;
+    padding: 15px; /* Padding for buttons */
+    font-size: 16px; /* Font size for buttons */
+    border: none; /* No border */
+    border-radius: 18px; /* Rounded corners */
+    cursor: pointer; /* Pointer cursor */
+    transition: all 0.3s ease; /* Smooth transition */
+    position: relative; /* For positioning of pseudo-elements */
+}
+
+.btn-primarymain {
+    background-color: #007bff; /* Blue color */
+    color: #fff; /* White text */
+    border-radius: 18px;
+}
+
+.btn-primarymain:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+}
+
+.btn-secondarymain {
+    background-color: #6c757d; /* Gray color */
+    color: #fff; /* White text */
+}
+
+.btn-secondarymain:hover {
+    background-color: #5a6268; /* Darker gray on hover */
+}
+
+.btn-infomain {
+    background-color: #17a2b8; /* Info color */
+    color: #fff; /* White text */
+}
+
+.btn-infomain:hover {
+    background-color: #138496; /* Darker info on hover */
+}
+
+.btn-dangermain {
+    background-color: #dc3545; /* Red color */
+    color: #fff; /* White text */
+}
+
+.btn-dangermain:hover {
+    background-color: #c82333; /* Darker red on hover */
+}
+
+/* Responsive styles */
+@media (max-width: 600px) {
+    .row {
+        flex-direction: column; /* Stack buttons on small screens */
+    }
+
+    .col {
+        margin: 5px 0; /* Vertical margin for stacked buttons */
+    }
+}

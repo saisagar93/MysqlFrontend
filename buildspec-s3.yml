@@ -1,0 +1,30 @@
+version: 0.2
+phases:
+    install:
+        runtime-versions:
+            nodejs: 12
+        commands:
+            - n 16
+    pre_build:
+        commands:
+            - echo Installing source NPM dependencies...
+            - npm install -g yarn
+            - npm install 
+    build:
+        commands:
+            - echo Build started on $(date)
+            - |
+                export REACT_APP_BASE_API_URL=$REACT_APP_BASE_API_URL// env.file
+                export REACT_APP_BASE_S3_URL=$REACT_APP_BASE_S3_URL
+                export REACT_APP_THEME=light4
+                npm build
+    post_build:
+        commands:
+            - bash -c "if [ \"$CODEBUILD_BUILD_SUCCEEDING\" == \"0\" ]; then exit 1; fi"
+            - aws s3 sync --acl public-read ./build s3://$BUCKET_NAME/
+            - aws s3 cp --acl public-read --cache-control="max-age=0, no-cache, no-store, must-revalidate" ./build/index.html s3://$BUCKET_NAME/
+            - aws cloudfront create-invalidation --distribution-id $CLOUDFRONT_DISTRIBUTION_ID --paths "/*"
+                
+artifacts:
+    files:
+        - 'build/**/*'

@@ -1,0 +1,225 @@
+/* Global Styles */
+body {
+    margin: 0;
+    font-family: 'Arial', sans-serif;
+    background-color: #f0f2f5;
+}
+
+/* Dashboard Container */
+.dashboard-container {
+    padding: 10px;
+    max-width: 1200px;
+    margin: auto;
+    position: relative; /* Added for absolute positioning of timer */
+}
+
+/* Header */
+.dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 5px;
+}
+
+.dashboard-button {
+    padding: 8px 12px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s;
+}
+
+.primary {
+    background-color: #007bff;
+    color: white;
+}
+
+.primary:hover {
+    background-color: #0056b3;
+}
+
+.danger {
+    background-color: #dc3545;
+    color: white;
+}
+
+.danger:hover {
+    background-color: #c82333;
+}
+
+/* Title */
+.dashboard-title {
+    text-align: center;
+    font-size: 1.8rem;
+    margin: 2px 0;
+}
+
+/* Timer */
+.timer {
+    position: absolute;
+    top: 10px;
+    right: 20px;
+    background-color: #007bff;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 14px;
+    height: 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+/* Search Input */
+.search-container {
+    text-align: center;
+}
+
+.search-input {
+    width: 90%;
+    padding: 8px;
+    border: 1px solid #080707;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+/* Card Container */
+.card-container {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    margin-bottom: 5px;
+}
+
+.card {
+    flex: 1 1 calc(25% - 10px);
+    margin: 10px;
+    padding: 10px;
+    border-radius: 6px;
+    color: white;
+    font-size: 14px;
+    text-align: center;
+    cursor: pointer;
+    transition: transform 0.3s;
+}
+
+.card:hover {
+    transform: scale(1.05);
+}
+
+.live {
+    background-color: #28a745;
+}
+
+.critical {
+    background-color: #ffc107;
+}
+
+.due {
+    background-color: #ff7b00; /* Orange */
+}
+
+.stopped {
+    background-color: #dc3545;
+}
+
+/* Tables */
+.tables-container {
+    display: flex;
+    flex-direction: column;
+    margin: 2px 0;
+}
+
+.table-scroll1 {
+    margin-top: 10px;
+    overflow-x: auto;
+    margin: 4px 0;
+    max-height: 180px; /* Set maximum height */
+    overflow-y: auto;  /* Enable vertical scrolling */
+    width: 48%;
+}
+
+.main-table.table-scroll {
+    max-height: 310px; /* Set maximum height */
+    overflow-y: auto;  /* Enable vertical scrolling */
+    border: 1px solid black;
+    border-radius: 4px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #fff;
+    font-family: Arial, sans-serif;
+}
+
+th, td {
+    padding: 4px 8px; /* Reduced padding to decrease row height */
+    text-align: left;
+    border-bottom: 1px solid #040303;
+    font-size: 12px; /* Reduced font size */
+}
+
+th {
+    background-color: #f1f1f1;
+}
+
+/* Total Row */
+tbody tr:last-child td {
+    font-weight: bold;
+}
+
+/* Aggregate Tables - 50% Width */
+.aggregate-tables {
+    display: flex;
+    justify-content: space-between;
+}
+
+.aggregate-table {
+    flex: 1 1 48%; /* Each table takes roughly 50% of the width with small gap */
+    max-height: 200px;
+    margin-right: 6%; /* Small gap between tables */
+    overflow-x: auto; /* Table scroll for overflow */
+    border: 1px solid #0f0e0e;
+    border-radius: 4px;
+}
+
+.aggregate-table:last-child {
+    margin-right: 0; /* Remove right margin from last table */
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .card {
+        flex: 1 1 calc(50% - 10px);
+    }
+
+    .search-container {
+        margin-bottom: 10px;
+    }
+
+    .search-input {
+        max-width: 90%;
+    }
+
+    .aggregate-table {
+        flex: 1 1 100%; /* Full width for aggregate tables on smaller screens */
+        margin-bottom: 10px; /* Add margin at the bottom for stacking */
+    }
+}
+
+@media (max-width: 480px) {
+    .dashboard-title {
+        font-size: 1.5rem;
+    }
+
+    .dashboard-button {
+        font-size: 12px;
+    }
+
+    .card {
+        flex: 1 1 100%; /* Full width for mobile */
+    }
+
+    th, td {
+        font-size: 10px; /* Smaller font size for mobile */
+    }
+}
