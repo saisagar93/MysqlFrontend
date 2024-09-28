@@ -15,7 +15,7 @@ phases:
             - echo Build started on $(date)
             - |
                 export REACT_APP_BASE_API_URL=$REACT_APP_BASE_API_URL
-                CI=false npm run build
+                npm run build
     post_build:
         commands:
             - bash -c "if [ \"$CODEBUILD_BUILD_SUCCEEDING\" == \"0\" ]; then exit 1; fi"
