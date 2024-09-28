@@ -62,7 +62,7 @@ const Dashboard = () => {
         setCardCounts(counts);
     }, [calculateMinutesSinceLastCheck]);
 
-    const fetchData = async () => {
+    const fetchData = useCallback( async()  => { 
         try {
             const response = await axios.get(SERVER_URL, { withCredentials: true });
             setRecords(response.data);
@@ -74,7 +74,7 @@ const Dashboard = () => {
         } catch (error) {
             handleFetchError(error);
         }
-    };
+    });
 
     const handleFetchError = (error) => {
         if (error.response && error.response.status === 401) {
@@ -110,12 +110,12 @@ const Dashboard = () => {
         const timerId = setInterval(() => {
             setTimer(prevTimer => {
                 if (prevTimer <= 0) {
-                    fetchData(); // Fetch data when timer reaches zero
-                    return 180; // Reset timer to 180 seconds
+                    fetchData(); 
+                    return 180; 
                 }
                 return prevTimer - 1;
             });
-        }, 1000); // Decrease timer every second
+        }, 1000); 
 
         return () => clearInterval(timerId);
     }, [fetchData]);
