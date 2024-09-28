@@ -62,7 +62,7 @@ const Dashboard = () => {
         setCardCounts(counts);
     }, [calculateMinutesSinceLastCheck]);
 
-    const fetchData = useCallback( async()  => { 
+    const fetchData = async () => {
         try {
             const response = await axios.get(SERVER_URL, { withCredentials: true });
             setRecords(response.data);
@@ -74,7 +74,7 @@ const Dashboard = () => {
         } catch (error) {
             handleFetchError(error);
         }
-    });
+    };
 
     const handleFetchError = (error) => {
         if (error.response && error.response.status === 401) {
@@ -99,26 +99,26 @@ const Dashboard = () => {
 
         const intervalId = setInterval(() => {
             fetchData();
-        }, 180000); 
+        }, 180000); // Fetch every 3 minutes
 
         return () => {
             clearInterval(intervalId);
         };
-    }, [navigate, calculateCardCounts,fetchData]);
+    }, [navigate, calculateCardCounts]);
 
     useEffect(() => {
         const timerId = setInterval(() => {
             setTimer(prevTimer => {
                 if (prevTimer <= 0) {
-                    fetchData(); 
-                    return 180; 
+                    fetchData(); // Fetch data when timer reaches zero
+                    return 180; // Reset timer to 180 seconds
                 }
                 return prevTimer - 1;
             });
-        }, 1000); 
+        }, 1000); // Decrease timer every second
 
         return () => clearInterval(timerId);
-    }, [fetchData]);
+    }, []);
 
     useEffect(() => {
         const journeyDetails = filteredRecords;
@@ -182,7 +182,7 @@ const Dashboard = () => {
                 case 'critical':
                     return minutesSinceLastCheck > 120 && !["Done", "DONE", "done"].includes(item.REMARKS) && !["closed", "CLOSED", "Closed"].includes(item.JP_STATUS);
                 case 'due':
-                    return (minutesSinceLastCheck > 60 && minutesSinceLastCheck < 120) && !["closed", "CLOSED", "Closed"].includes(item.JP_STATUS) && !["Done", "DONE", "done"].includes(item.REMARKS);
+                    return (minutesSinceLastCheck > 60 && minutesSinceLastCheck < 120) || isNaN(minutesSinceLastCheck) && !["closed", "CLOSED", "Closed"].includes(item.JP_STATUS) && !["Done", "DONE", "done"].includes(item.REMARKS);
                 case 'stopped':
                     return ["Done", "DONE", "done"].includes(item.REMARKS) && !["closed", "CLOSED", "Closed"].includes(item.JP_STATUS);
                 default:
@@ -359,5 +359,3 @@ const Dashboard = () => {
 };
 
 export default Dashboard;
-
-
