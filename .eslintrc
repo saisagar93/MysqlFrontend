@@ -5,7 +5,7 @@
 		"node": true
 	},
 	"parser": "babel-eslint",
-	"extends": ["react-app", "airbnb", "plugin:prettier/recommended", "prettier/react"],
+	"extends": ["react-app", "plugin:prettier/recommended", "prettier/react"],
 	"plugins": ["prettier"],
 	"settings": {
 		"import/resolver": {
