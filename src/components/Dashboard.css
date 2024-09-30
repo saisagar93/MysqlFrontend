@@ -135,6 +135,7 @@ body {
     max-height: 180px; /* Set maximum height */
     overflow-y: auto;  /* Enable vertical scrolling */
     width: 48%;
+    border: 1px solid black;
 }
 
 .main-table.table-scroll {
@@ -156,6 +157,7 @@ th, td {
     text-align: left;
     border-bottom: 1px solid #040303;
     font-size: 12px; /* Reduced font size */
+    border: 1px solid darkgray;
 }
 
 th {
@@ -171,6 +173,7 @@ tbody tr:last-child td {
 .aggregate-tables {
     display: flex;
     justify-content: space-between;
+   
 }
 
 .aggregate-table {

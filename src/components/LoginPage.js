@@ -12,13 +12,16 @@ const LoginPage = ({ setIsAuthenticated }) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await axios.post(`${process.env.REACT_APP_BASE_API_URL}/login`, { username, password }, { withCredentials: true });
+            const response = await axios.post(`${process.env.REACT_APP_BASE_API_URL}/login`, { username, password });
             setMessage(response.data.message);
-            if (response.data.user) {
+            if (response.data.token) {
+                // Save the token to localStorage
+                localStorage.setItem('token', response.data.token);
                 setIsAuthenticated(true);
-                navigate('/main');
+                navigate('/main'); // Redirect to the main page
             }
         } catch (error) {
+            // Set message based on error response
             setMessage(error.response ? error.response.data.message : 'Error logging in.');
         }
     };
@@ -36,40 +39,40 @@ const LoginPage = ({ setIsAuthenticated }) => {
     return (
         <div className="containerlogin">
             <form className='loginform' onSubmit={handleSubmit}>
-    <div className="mb-3 logo-container">
-        <img src='almadinalogo.jpeg' alt="Logo" className="logo" /> {/* Logo before username */}
-    </div>
-    <div className="mb-3">
-        <label className="labellogin">Login/User Id</label>
-        <input
-            type="text"
-            className="input-fieldlogin"
-            name="username"
-            value={username}
-            onChange={handleInputChange}
-            required
-            autoComplete="username"
-        />
-    </div>
-    <div className="mb-3">
-        <label className="labellogin">Password</label>
-        <input
-            type="password"
-            className="input-fieldlogin"
-            name="password"
-            value={password}
-            onChange={handleInputChange}
-            required
-            autoComplete="current-password"
-        />
-    </div>
-    <button type="submit" className="login-button">Login</button>
-    <div className="logo-container">
-        <h5> Powered by </h5>
-        <img src='bayanat.png' alt="Powered by" className="powered-by" /> {/* Small powered by image */}     
-    </div>
-</form>
-    {message && <p className="message">{message}</p>}
+                <div className="mb-3 logo-container">
+                    <img src='almadinalogo.jpeg' alt="Logo" className="logo" />
+                </div>
+                <div className="mb-3">
+                    <label className="labellogin">Login/User Id</label>
+                    <input
+                        type="text"
+                        className="input-fieldlogin"
+                        name="username"
+                        value={username}
+                        onChange={handleInputChange}
+                        required
+                        autoComplete="username"
+                    />
+                </div>
+                <div className="mb-3">
+                    <label className="labellogin">Password</label>
+                    <input
+                        type="password"
+                        className="input-fieldlogin"
+                        name="password"
+                        value={password}
+                        onChange={handleInputChange}
+                        required
+                        autoComplete="current-password"
+                    />
+                </div>
+                <button type="submit" className="login-button">Login</button>
+                <div className="logo-container">
+                    <h5> Powered by </h5>
+                    <img src='bayanat.png' alt="Powered by" className="powered-by" />
+                </div>
+            </form>
+            {message && <p className="message">{message}</p>}
         </div>
     );
 };

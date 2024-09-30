@@ -95,7 +95,7 @@
 
 /* Table styles */
 .modify-record-table-container {
-    max-height: 400px; /* Height for scrolling */
+    max-height: 800px; /* Height for scrolling */
     overflow-y: auto; /* Enable scrolling */
     margin-top: 20px; /* Space above the table */
 }

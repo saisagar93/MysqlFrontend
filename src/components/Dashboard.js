@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react'; 
+import React, { useState, useEffect, useCallback, useMemo } from 'react';  
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import useDeviceDetect from '../hooks/useDeviceDetect';
@@ -62,9 +62,12 @@ const Dashboard = () => {
         setCardCounts(counts);
     }, [calculateMinutesSinceLastCheck]);
 
-    const fetchData = async () => {
+    const fetchData = useCallback(async () => {
         try {
-            const response = await axios.get(SERVER_URL, { withCredentials: true });
+            const token = localStorage.getItem("token");
+            const response = await axios.get(SERVER_URL, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
             setRecords(response.data);
             const filtered = response.data.filter(item => !["closed", "CLOSED", "Closed"].includes(item.JP_STATUS));
             setFilteredRecords(filtered);
@@ -74,26 +77,33 @@ const Dashboard = () => {
         } catch (error) {
             handleFetchError(error);
         }
-    };
+    }, [calculateCardCounts]);
 
     const handleFetchError = (error) => {
-        if (error.response && error.response.status === 401) {
-            navigate('/'); // Redirect to login on unauthorized access
-        } else {
-            setError('Error fetching dashboard data');
-            console.error('Fetch error:', error);
-        }
+        console.error('Fetch error:', error);
+        setError('Error fetching dashboard data');
     };
 
     const sendEmailNotification = async (message) => {
         try {
-            await axios.post(SEND_EMAIL_URL, { message }, { withCredentials: true });
-            console.log('Email sent successfully');
+            const token = localStorage.getItem("token");
+            console.log('Token:', token); // Log the token for debugging
+    
+            const response = await axios.post(SEND_EMAIL_URL, {
+                message, // The message to send
+            }, {
+                headers: { 
+                    Authorization: `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                }
+            });
+    
+            console.log('Email sent successfully:', response.data);
         } catch (error) {
-            console.error('Error sending email:', error);
+            console.error('Error sending email:', error.response ? error.response.data : error.message);
         }
     };
-
+    
     useEffect(() => {
         fetchData();
 
@@ -104,7 +114,7 @@ const Dashboard = () => {
         return () => {
             clearInterval(intervalId);
         };
-    }, [navigate, calculateCardCounts]);
+    }, [fetchData]);
 
     useEffect(() => {
         const timerId = setInterval(() => {
@@ -118,7 +128,7 @@ const Dashboard = () => {
         }, 1000); // Decrease timer every second
 
         return () => clearInterval(timerId);
-    }, []);
+    }, [fetchData]);
 
     useEffect(() => {
         const journeyDetails = filteredRecords;
@@ -180,18 +190,26 @@ const Dashboard = () => {
                 case 'live':
                     return !["closed", "CLOSED", "Closed"].includes(item.JP_STATUS);
                 case 'critical':
-                    return minutesSinceLastCheck > 120 && !["Done", "DONE", "done"].includes(item.REMARKS) && !["closed", "CLOSED", "Closed"].includes(item.JP_STATUS);
+                    return minutesSinceLastCheck > 120 && 
+                           !["Done", "DONE", "done"].includes(item.REMARKS) && 
+                           !["closed", "CLOSED", "Closed"].includes(item.JP_STATUS);
                 case 'due':
-                    return (minutesSinceLastCheck > 60 && minutesSinceLastCheck < 120) || isNaN(minutesSinceLastCheck) && !["closed", "CLOSED", "Closed"].includes(item.JP_STATUS) && !["Done", "DONE", "done"].includes(item.REMARKS);
+                    return (
+                        (minutesSinceLastCheck > 60 && minutesSinceLastCheck < 120) || 
+                        (isNaN(minutesSinceLastCheck) && 
+                        !["closed", "CLOSED", "Closed"].includes(item.JP_STATUS) && 
+                        !["Done", "DONE", "done"].includes(item.REMARKS))
+                    );
                 case 'stopped':
-                    return ["Done", "DONE", "done"].includes(item.REMARKS) && !["closed", "CLOSED", "Closed"].includes(item.JP_STATUS);
+                    return ["Done", "DONE", "done"].includes(item.REMARKS) && 
+                           !["closed", "CLOSED", "Closed"].includes(item.JP_STATUS);
                 default:
                     return true;
             }
         });
         setFilteredRecords(filtered);
     };
-
+    
     const handleSearch = (event) => {
         const value = event.target.value.toLowerCase();
         setSearchTerm(value);
@@ -235,9 +253,6 @@ const Dashboard = () => {
                 <button className="dashboard-button primary" onClick={() => navigate('/main')}>
                     Main Page
                 </button>
-                {/* <button className="dashboard-button danger" onClick={() => navigate('/logout')}>
-                    Logout
-                </button> */}
             </header>
 
             <h1 className="dashboard-title">JMCC Dashboard</h1>
@@ -359,3 +374,5 @@ const Dashboard = () => {
 };
 
 export default Dashboard;
+
+

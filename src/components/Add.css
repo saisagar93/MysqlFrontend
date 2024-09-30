@@ -91,11 +91,18 @@
     .form-select-addrecord,
     .form-textarea-addrecord {
         padding: 10px; /* Adjust padding for mobile comfort */
-        width: 90%;
+        width: 100%;
 
     }
 
     .submit-button-addrecord {
         margin-top: 5px; /* Less space above the button on mobile */
     }
+
+    /* Make Responsive input field */
+    .mannual_form_grid{
+        display: flex;
+        flex-direction: column;
+    }
 }
+

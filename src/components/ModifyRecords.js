@@ -6,9 +6,7 @@ import './ModifyRecords.css';
 
 const ModifyRecords = () => {
     const navigate = useNavigate();
-    //const [records, setRecords] = useState([]);
     const [filteredRecords, setFilteredRecords] = useState([]);
-    //const [selectedRecord, setSelectedRecord] = useState(null);
     const [formData, setFormData] = useState({
         tracker: '',
         sjm: '',
@@ -31,6 +29,7 @@ const ModifyRecords = () => {
     });
     const [message, setMessage] = useState('');
     const [isEditing, setIsEditing] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
 
     const statusOptions = [
         { value: 'In Transit', label: 'In Transit' },
@@ -43,17 +42,23 @@ const ModifyRecords = () => {
 
     const fetchRecords = async () => {
         try {
-            const response = await axios.get(`${process.env.REACT_APP_BASE_API_URL}/dashboard`, { withCredentials: true });
+            setIsLoading(true);
+            const token = localStorage.getItem("token");
+            const response = await axios.get(`${process.env.REACT_APP_BASE_API_URL}/dashboard`, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
             const filtered = response.data.filter(item => item.JP_STATUS !== 'CLOSED');
-           // setRecords(response.data);
-            setFilteredRecords(filtered.slice(0, 18)); // Limit to 18 records
+            setFilteredRecords(filtered);
+            setMessage('Records fetched successfully!');
         } catch (error) {
             console.error('Error fetching records:', error);
+            setMessage('Error fetching records. Please try again.');
+        } finally {
+            setIsLoading(false);
         }
     };
 
     const handleSelect = (record) => {
-        //setSelectedRecord(record);
         setFormData({
             tracker: record.TRACKER || '',
             sjm: record.SJM || '',
@@ -81,7 +86,7 @@ const ModifyRecords = () => {
         const { name, value } = e.target;
         setFormData(prevData => ({
             ...prevData,
-            [name]: value.toUpperCase(), // Convert input value to uppercase
+            [name]: value.toUpperCase(), // Maintain uppercase formatting
         }));
     };
 
@@ -92,34 +97,38 @@ const ModifyRecords = () => {
                 setMessage('Journey Plane No is required for updating.');
                 return;
             }
-            await axios.put(`${process.env.REACT_APP_BASE_API_URL}/modifyRecord/${formData.journey_Plane_No}`, formData, { withCredentials: true });
-            await fetchRecords();
+            const token = localStorage.getItem("token");
+            await axios.put(`${process.env.REACT_APP_BASE_API_URL}/modifyRecord/${formData.journey_Plane_No}`, formData, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
             setMessage('Record updated successfully!');
-            //setSelectedRecord(null);
+            
+            await fetchRecords(); // Ensure the latest data is fetched
+            
             setIsEditing(false);
         } catch (error) {
             console.error('Error updating record:', error);
-            setMessage('Error updating record.');
+            setMessage('Error updating record. Please try again.');
         }
     };
-
+    
     const handleDelete = async () => {
         try {
-            await axios.delete(`${process.env.REACT_APP_BASE_API_URL}/deleteRecord/${formData.journey_Plane_No}`, { withCredentials: true });
+            const token = localStorage.getItem("token");
+            await axios.delete(`${process.env.REACT_APP_BASE_API_URL}/deleteRecord/${formData.journey_Plane_No}`, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
             setMessage('Record deleted successfully!');
-            await fetchRecords();
-            //setSelectedRecord(null);
+    
+            await fetchRecords(); // Ensure the latest data is fetched
+            
             setIsEditing(false);
         } catch (error) {
             console.error('Error deleting record:', error);
-            setMessage('Error deleting record.');
+            setMessage('Error deleting record. Please try again.');
         }
     };
-
-    const handleLogout = () => {
-        navigate('/logout');
-    };
-
+    
     const handleGoToMain = () => {
         navigate('/main');
     };
@@ -141,17 +150,16 @@ const ModifyRecords = () => {
                     <button className="modify-btn modify-btn-primary" onClick={handleGoToMain}>
                         Main Page
                     </button>
-                    <button className="modify-btn modify-btn-danger" onClick={handleLogout}>
-                        Logout
-                    </button>
                 </div>
             </header>
-            {isEditing ? (
+            {isLoading ? (
+                <p>Loading records...</p>
+            ) : isEditing ? (
                 <form onSubmit={handleUpdate} className="modify-edit-form">
                     <h4>Edit Record</h4>
                     {Object.keys(formData).map(key => (
                         <div className="modify-form-group" key={key}>
-                            <label className="modify-form-label">{key.replace(/_/g, ' ').toUpperCase()} </label>
+                            <label className="modify-form-label">{key.replace(/_/g, ' ').toUpperCase()}</label>
                             {key === 'jp_Status' ? (
                                 <select
                                     className="modify-form-control"
@@ -175,8 +183,8 @@ const ModifyRecords = () => {
                                     value={formData[key] || ''}
                                     onChange={handleChange}
                                     autoComplete="off"
-                                    required={key === 'journey_Plane_No'} // Example of required field
-                                    style={{ textTransform: 'uppercase' }} // CSS to make text uppercase
+                                    required={key === 'journey_Plane_No'}
+                                    style={{ textTransform: 'uppercase' }}
                                 />
                             )}
                         </div>
@@ -201,7 +209,7 @@ const ModifyRecords = () => {
                                 <th>Last Check Time</th>
                                 <th>Next Point</th>
                                 <th>Next Arrival Time</th>
-                                <th>OFFLOAD_POINT</th>
+                                <th>OFFLOAD POINT</th>
                                 <th>EDIT</th>
                             </tr>
                         </thead>

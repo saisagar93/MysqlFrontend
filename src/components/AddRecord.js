@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState} from 'react';
 import axios from 'axios';
 import useDeviceDetect from '../hooks/useDeviceDetect';
 import './Add.css';
@@ -38,9 +38,17 @@ const AddRecord = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        const token = localStorage.getItem('token');
+
+        if (!token) {
+            setMessage('Unauthorized: Please log in.');
+            return;
+        }
 
         try {
-            const response = await axios.post(`${process.env.REACT_APP_BASE_API_URL}/addRecord`, formData, { withCredentials: true });
+            const response = await axios.post(`${process.env.REACT_APP_BASE_API_URL}/addRecord`, formData, {
+                headers: { Authorization: `Bearer ${token}` } // Include the token in the headers
+            });
             setMessage(response.data.message);
             setFormData({
                 tracker: '',
@@ -70,8 +78,8 @@ const AddRecord = () => {
 
     return (
         <div className={`containeradd ${isMobile ? 'mobile' : 'desktop'}`}>
-            <form onSubmit={handleSubmit} className="form-grid">
-                <div>
+            <form onSubmit={handleSubmit} className="form-grid mannual_form_grid">
+                <div >
                     <label className="form-label-addrecord">Tracker <span className="required">*</span></label>
                     <input
                         type="text"
@@ -291,3 +299,4 @@ const AddRecord = () => {
 };
 
 export default AddRecord;
+
