@@ -132,10 +132,9 @@ body {
     margin-top: 10px;
     overflow-x: auto;
     margin: 4px 0;
-    max-height: 180px; /* Set maximum height */
+    max-height: 220px; /* Set maximum height */
     overflow-y: auto;  /* Enable vertical scrolling */
-    width: 48%;
-    border: 1px solid black;
+    width: 49%;
 }
 
 .main-table.table-scroll {
@@ -153,11 +152,11 @@ table {
 }
 
 th, td {
-    padding: 4px 8px; /* Reduced padding to decrease row height */
+    padding: 2px 4px; /* Reduced padding to decrease row height */
     text-align: left;
     border-bottom: 1px solid #040303;
     font-size: 12px; /* Reduced font size */
-    border: 1px solid darkgray;
+    border: 1px solid rgb(5, 5, 5);
 }
 
 th {
