@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react';  
+import React, { useState, useEffect, useCallback, useMemo } from 'react';   
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import useDeviceDetect from '../hooks/useDeviceDetect';
@@ -6,7 +6,6 @@ import moment from 'moment-timezone';
 import './Dashboard.css'; 
 
 const SERVER_URL = `${process.env.REACT_APP_BASE_API_URL}/dashboard`;
-const SEND_EMAIL_URL = `${process.env.REACT_APP_BASE_API_URL}/sendEmail`;
 
 const formatDateTime = (dateString) => {
     if (!dateString) return 'N/A';
@@ -25,7 +24,7 @@ const Dashboard = () => {
         dueForChecking: 0,
         stoppedTrucks: 0,
     });
-    const [timer, setTimer] = useState(180); // Timer starts at 180 seconds (3 minutes)
+    const [timer, setTimer] = useState(180);
     const navigate = useNavigate();
     const { isMobile } = useDeviceDetect();
 
@@ -73,7 +72,7 @@ const Dashboard = () => {
             setFilteredRecords(filtered);
             setError('');
             calculateCardCounts(filtered);
-            setTimer(180); // Reset timer after fetching new data
+            setTimer(180);
         } catch (error) {
             handleFetchError(error);
         }
@@ -84,26 +83,6 @@ const Dashboard = () => {
         setError('Error fetching dashboard data');
     };
 
-    const sendEmailNotification = async (message) => {
-        try {
-            const token = localStorage.getItem("token");
-            console.log('Token:', token); // Log the token for debugging
-    
-            const response = await axios.post(SEND_EMAIL_URL, {
-                message, // The message to send
-            }, {
-                headers: { 
-                    Authorization: `Bearer ${token}`,
-                    'Content-Type': 'application/json',
-                }
-            });
-    
-            console.log('Email sent successfully:', response.data);
-        } catch (error) {
-            console.error('Error sending email:', error.response ? error.response.data : error.message);
-        }
-    };
-    
     useEffect(() => {
         fetchData();
 
@@ -120,72 +99,28 @@ const Dashboard = () => {
         const timerId = setInterval(() => {
             setTimer(prevTimer => {
                 if (prevTimer <= 0) {
-                    fetchData(); // Fetch data when timer reaches zero
-                    return 180; // Reset timer to 180 seconds
+                    fetchData();
+                    return 180;
                 }
                 return prevTimer - 1;
             });
-        }, 1000); // Decrease timer every second
+        }, 1000);
 
         return () => clearInterval(timerId);
     }, [fetchData]);
 
-    useEffect(() => {
-        const journeyDetails = filteredRecords;
-
-        if (cardCounts.criticalCheck > 0) {
-            const criticalJourneyDetails = journeyDetails.filter(item => {
-                const minutesSinceLastCheck = calculateMinutesSinceLastCheck(item.IVMS_CHECK_DATE);
-                return minutesSinceLastCheck > 120 && !["Done", "DONE", "done"].includes(item.REMARKS);
-            });
-
-            const emailContent = criticalJourneyDetails.map(item => 
-                `JOURNEY PLANE NO: ${item.JOURNEY_PLANE_NO}`
-            ).join('\n');
-
-            sendEmailNotification(`Below journeys in the critical check:\n${emailContent}`);
-        }
-
-        if (cardCounts.dueForChecking > cardCounts.liveJourneys / 2) {
-            sendEmailNotification('More than half of live journeys are due for checking.');
-        }
-
-        if (cardCounts.liveJourneys === cardCounts.stoppedTrucks && cardCounts.liveJourneys > 0) {
-            const liveJourneys = filteredRecords;
-            const stoppedTrucks = filteredRecords.filter(item => 
-                ["Done", "DONE", "done"].includes(item.REMARKS)
-            );
-
-            if (liveJourneys.length === stoppedTrucks.length) {
-                const liveJourneyIds = new Set(liveJourneys.map(item => item.JOURNEY_PLANE_NO));
-                const stoppedTruckIds = new Set(stoppedTrucks.map(item => item.JOURNEY_PLANE_NO));
-
-                const hasSameItems = [...liveJourneyIds].every(id => stoppedTruckIds.has(id)) &&
-                                     [...stoppedTruckIds].every(id => liveJourneyIds.has(id));
-
-                if (hasSameItems) {
-                    sendEmailNotification('Live journeys and stopped trucks counts are equal, with matching items.');
-                }
-            }
-        }
-
-        const sjmCounts = {};
-        filteredRecords.forEach(item => {
-            if (item.SJM) {
-                sjmCounts[item.SJM] = (sjmCounts[item.SJM] || 0) + 1;
-            }
-        });
-
-        for (const [sjmName, count] of Object.entries(sjmCounts)) {
-            if (count > 30) {
-                sendEmailNotification(`SJM ${sjmName} has more than 30 live journeys.`);
-            }
-        }
-    }, [cardCounts, filteredRecords, calculateMinutesSinceLastCheck]);
-
     const handleCardClick = (type) => {
         const filtered = records.filter(item => {
             const minutesSinceLastCheck = calculateMinutesSinceLastCheck(item.IVMS_CHECK_DATE);
+            
+            const isValidHours = 
+                (minutesSinceLastCheck > 60 && minutesSinceLastCheck < 120) || 
+                isNaN(minutesSinceLastCheck);
+            
+            const isValidStatus = 
+                !["closed", "CLOSED", "Closed"].includes(item.JP_STATUS) && 
+                !["Done", "DONE", "done"].includes(item.REMARKS);
+            
             switch (type) {
                 case 'live':
                     return !["closed", "CLOSED", "Closed"].includes(item.JP_STATUS);
@@ -194,12 +129,7 @@ const Dashboard = () => {
                            !["Done", "DONE", "done"].includes(item.REMARKS) && 
                            !["closed", "CLOSED", "Closed"].includes(item.JP_STATUS);
                 case 'due':
-                    return (
-                        (minutesSinceLastCheck > 60 && minutesSinceLastCheck < 120) || 
-                        (isNaN(minutesSinceLastCheck) && 
-                        !["closed", "CLOSED", "Closed"].includes(item.JP_STATUS) && 
-                        !["Done", "DONE", "done"].includes(item.REMARKS))
-                    );
+                    return isValidHours && isValidStatus;
                 case 'stopped':
                     return ["Done", "DONE", "done"].includes(item.REMARKS) && 
                            !["closed", "CLOSED", "Closed"].includes(item.JP_STATUS);
@@ -210,7 +140,8 @@ const Dashboard = () => {
         setFilteredRecords(filtered);
     };
     
-    const handleSearch = (event) => {
+
+     const handleSearch = (event) => {
         const value = event.target.value.toLowerCase();
         setSearchTerm(value);
         setFilteredRecords(records.filter(record =>
@@ -232,20 +163,34 @@ const Dashboard = () => {
         return records.reduce((acc, record) => {
             const tracker = record.TRACKER?.trim().toLowerCase(); 
             if (!tracker || ["closed", "CLOSED", "Closed"].includes(record.JP_STATUS)) return acc;
-
+    
             acc[tracker] = acc[tracker] || { liveJPS: 0, criticalCheck: 0, dueForChecking: 0 };
-
-            if (!["closed", "CLOSED", "Closed"].includes(record.JP_STATUS)) acc[tracker].liveJPS++;
-            if (calculateMinutesSinceLastCheck(record.IVMS_CHECK_DATE) > 120 && !["Done", "DONE", "done"].includes(record.REMARKS) && !["closed", "CLOSED", "Closed"].includes(record.JP_STATUS)) {
+    
+            // Calculate minutes since last check once
+            const minutesSinceLastCheck = calculateMinutesSinceLastCheck(record.IVMS_CHECK_DATE);
+    
+            // Increment live journeys if JP_STATUS is not closed
+            if (!["closed", "CLOSED", "Closed"].includes(record.JP_STATUS)) {
+                acc[tracker].liveJPS++;
+            }
+    
+            // Check for critical condition
+            if (minutesSinceLastCheck > 120 && !["Done", "DONE", "done"].includes(record.REMARKS)) {
                 acc[tracker].criticalCheck++;
             }
-            if ((calculateMinutesSinceLastCheck(record.IVMS_CHECK_DATE) > 60 && calculateMinutesSinceLastCheck(record.IVMS_CHECK_DATE) < 120) || isNaN(calculateMinutesSinceLastCheck(record.IVMS_CHECK_DATE))) {
+    
+            // Check for due for checking condition
+            if (
+                (minutesSinceLastCheck > 60 && minutesSinceLastCheck < 120) || 
+                (isNaN(minutesSinceLastCheck) && !["Done", "DONE", "done"].includes(record.REMARKS))
+            ) {
                 acc[tracker].dueForChecking++;
             }
-
+    
             return acc;
-        }, {}); 
+        }, {});
     }, [records, calculateMinutesSinceLastCheck]);
+    
 
     return (
         <div className={`dashboard-container ${isMobile ? 'mobile' : 'desktop'}`}>
@@ -314,7 +259,7 @@ const Dashboard = () => {
                         </div>
                         <div className="aggregate-tables">
                             <div className="table-scroll1">
-                                <table>
+                                <table className="aggregate1" id="sub1">
                                     <thead>
                                         <tr>
                                             <th>Journey Plane Date</th>
@@ -337,7 +282,7 @@ const Dashboard = () => {
                             </div>
 
                             <div className="table-scroll1">
-                                <table>
+                                <table className="aggregate2" id="sub2">
                                     <thead>
                                         <tr>
                                             <th>Tracker</th>
@@ -349,7 +294,7 @@ const Dashboard = () => {
                                     <tbody>
                                         {Object.entries(trackersCount).map(([tracker, counts]) => (
                                             <tr key={tracker}>
-                                                <td>{tracker}</td>
+                                                <td>{tracker.toUpperCase()}</td>
                                                 <td>{counts.liveJPS}</td>
                                                 <td>{counts.criticalCheck}</td>
                                                 <td>{counts.dueForChecking}</td>
@@ -368,7 +313,7 @@ const Dashboard = () => {
                     </div>
                 </div>
             )}
-            <div className="timer">Time until next fetch: {Math.floor(timer / 60)}:{('0' + (timer % 60)).slice(-2)}</div>
+            <div className="timer">Next Fetch: {Math.floor(timer / 60)}:{('0' + (timer % 60)).slice(-2)}</div>
         </div>
     );
 };

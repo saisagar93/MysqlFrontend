@@ -35,7 +35,12 @@ const LoginPage = ({ setIsAuthenticated }) => {
         }
         setMessage(''); // Clear message on input change
     };
-
+    
+    // Function to navigate to signup
+    const handleSignup = () => {
+    navigate("/signup");
+    };
+    
     return (
         <div className="containerlogin">
             <form className='loginform' onSubmit={handleSubmit}>
@@ -67,6 +72,8 @@ const LoginPage = ({ setIsAuthenticated }) => {
                     />
                 </div>
                 <button type="submit" className="login-button">Login</button>
+                <button type="button" className="login-button" id="signup-submit-button" onClick={handleSignup}> Create account </button>
+                
                 <div className="logo-container">
                     <h5> Powered by </h5>
                     <img src='bayanat.png' alt="Powered by" className="powered-by" />

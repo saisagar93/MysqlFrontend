@@ -1,7 +1,7 @@
 /* Global Styles */
 body {
     margin: 0;
-    font-family: 'Arial', sans-serif;
+    font-family: 'Roboto', sans-serif;
     background-color: #f0f2f5;
 }
 
@@ -34,6 +34,9 @@ body {
     color: white;
 }
 
+button.dashboard-button.primary {
+    margin-left: 10px;
+}
 .primary:hover {
     background-color: #0056b3;
 }
@@ -74,7 +77,7 @@ body {
 }
 
 .search-input {
-    width: 90%;
+    width: 97%;
     padding: 8px;
     border: 1px solid #080707;
     border-radius: 4px;
@@ -129,18 +132,18 @@ body {
 }
 
 .table-scroll1 {
-    margin-top: 10px;
+    margin-top: 20px;
     overflow-x: auto;
     margin: 4px 0;
-    max-height: 220px; /* Set maximum height */
+    max-height: 250px; /* Set maximum height */
     overflow-y: auto;  /* Enable vertical scrolling */
     width: 49%;
 }
 
 .main-table.table-scroll {
-    max-height: 310px; /* Set maximum height */
+    max-height: 260px; /* Set maximum height */
     overflow-y: auto;  /* Enable vertical scrolling */
-    border: 1px solid black;
+    border: 2px solid rgb(130,130,130);
     border-radius: 4px;
 }
 
@@ -156,7 +159,7 @@ th, td {
     text-align: left;
     border-bottom: 1px solid #040303;
     font-size: 12px; /* Reduced font size */
-    border: 1px solid rgb(5, 5, 5);
+    border: 1px solid rgb(184, 184, 184);
 }
 
 th {
@@ -175,19 +178,43 @@ tbody tr:last-child td {
    
 }
 
+.aggregate1-th {
+    padding: 2px 4px; /* Reduced padding to decrease row height */
+    text-align: left;
+    border-bottom: 1px solid #040303;
+    font-size: 12px; /* Reduced font size */
+    border: 1px solid rgb(228, 232, 197);
+}
+
 .aggregate-table {
+
     flex: 1 1 48%; /* Each table takes roughly 50% of the width with small gap */
-    max-height: 200px;
+    max-height: 300px;
     margin-right: 6%; /* Small gap between tables */
     overflow-x: auto; /* Table scroll for overflow */
-    border: 1px solid #0f0e0e;
     border-radius: 4px;
+    margin-top: 2px;
 }
 
 .aggregate-table:last-child {
     margin-right: 0; /* Remove right margin from last table */
 }
 
+#sub1 th {
+    background-color:rgb(228,232,197); 
+}
+
+#sub2 th {
+    background-color:rgb(197,255,209); 
+}
+
+#sub1{
+    border: 2px solid rgb(130,130,130); ;
+}
+
+#sub2{
+    border: 2px solid rgb(130,130,130); ;
+}
 /* Responsive Design */
 @media (max-width: 768px) {
     .card {

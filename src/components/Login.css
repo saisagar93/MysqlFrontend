@@ -30,11 +30,12 @@
     width: 100%; /* Full width for label */
     text-align: left; /* Align label text to the left */
     margin-bottom: 5px; /* Space below label */
+    color: darkgray;
     font-weight: bold; /* Bold labels */
 }
 
 .input-fieldlogin {
-    width: 100%; /* Full width for inputs */
+    width: 93%; /* Full width for inputs */
     padding: 12px; /* Increased padding */
     border: 1px solid #ccc; /* Border for inputs */
     border-radius: 5px; /* Rounded corners for inputs */
@@ -73,6 +74,10 @@
 .powered-by {
     max-width: 150px; /* Size for powered by image */
     margin-top: 05px; /* Space above image */
+}
+
+h5{
+    color: darkgray;
 }
 
 .message {

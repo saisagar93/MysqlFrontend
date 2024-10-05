@@ -1,14 +1,13 @@
 /* General wrapper styles */
 .modify-records-wrapper {
     padding: 20px;
-    font-family: Arial, sans-serif; /* Updated font for the whole wrapper */
 }
 
 /* Header styles */
 .modify-records-header {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 20px;
+    margin-bottom: 5px;
 }
 
 .modify-button-group {
@@ -25,15 +24,18 @@
     font-size: 14px; /* Adjusted font size */
     transition: background-color 0.3s; /* Smooth transition for hover effects */
 }
-
+.modify-btn-edit{
+    background-color:lightgreen;
+    color: black;
+}
 /* Primary Button (Update) */
 .modify-btn-primary {
-    background-color: #28a745; /* Green */
+    background-color: #007bff; /* Blue */
     color: white;
 }
 
 .modify-btn-primary:hover {
-    background-color: #218838; /* Darker green on hover */
+    background-color: #0056b3; /* Darker blue on hover */
 }
 
 /* Danger Button (Delete) */
@@ -47,12 +49,12 @@
 }
 
 .modify-btn-secondary {
-    background-color: grey; /* Red */
+    background-color: grey; /* Grey */
     color: white;
 }
 
 .modify-btn-secondary:hover {
-    background-color:darkgray; /* Darker red on hover */
+    background-color: darkgray; /* Darker grey on hover */
 }
 
 /* Info Button (Edit) */
@@ -69,7 +71,7 @@
 .modify-edit-form {
     display: grid;
     grid-template-columns: repeat(2, 1fr); /* Two columns for desktop */
-    gap: 10px; /* Reduced gap */
+    gap: 5px; /* Reduced gap */
 }
 
 .modify-form-group {
@@ -87,7 +89,7 @@
 /* Input and select styles */
 .modify-form-control {
     padding: 6px; /* Reduced padding */
-    border: 1px solid #ccc; /* Light gray border */
+    border: 1px solid #0a0909; /* Light gray border */
     border-radius: 4px;
     box-sizing: border-box; /* Include padding in width */
     font-size: 14px; /* Adjusted font size for inputs */
@@ -95,26 +97,47 @@
 
 /* Table styles */
 .modify-record-table-container {
-    max-height: 800px; /* Height for scrolling */
+    max-height: 680px; /* Height for scrolling */
     overflow-y: auto; /* Enable scrolling */
-    margin-top: 20px; /* Space above the table */
+    margin-top: 4px; /* Space above the table */
 }
 
 .modify-record-table {
     width: 100%;
     border-collapse: collapse;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Shadow for depth */
+    border-radius: 5px; /* Rounded corners */
+    border: 2px solid darkgray;
 }
 
 .modify-record-table th,
 .modify-record-table td {
-    border: 1px solid #ccc;
-    padding: 6px; /* Adjusted padding for table cells */
+    border: 1px solid #ddd; /* Light border for cells */
     text-align: left;
-    font-size: 14px; /* Consistent font size for table cells */
+    font-size: 12px; /* Smaller font size for table cells */
+    padding: 4px; /* Padding for header */
+    width: 60px; /* Fixed width for consistency */
+    height: 28px; /* Height for header */
 }
 
 .modify-record-table th {
-    background-color: #f2f2f2; /* Light gray background */
+    background-color:lightgray; /* Light cyan background for header */
+    color:#444444; /* Dark teal text for header */
+    font-weight: bold; /* Bold header text */
+    height: 30px; /* Slightly increased height for header */
+}
+
+.modify-record-table td {
+    padding: 1px; /* Reduced padding for compactness */
+    height: 24px; /* Reduced height for table cells */
+}
+
+.modify-record-table tr:nth-child(even) {
+    background-color: #f9f9f9; /* Light gray for even rows */
+}
+
+.modify-record-table tr:hover {
+    background-color: #e0e0e0; /* Light gray on hover */
 }
 
 /* Success and error message styles */
@@ -123,6 +146,47 @@
     margin-top: 10px;
     font-size: 14px; /* Adjusted font size for messages */
 }
+/* Dropdown container */
+.status-filter {
+    margin: 4px 0; /* Space above and below */
+    display: flex; /* Flex for alignment */
+    align-items: center; /* Center align items */
+    flex-wrap: wrap; /* Allow wrapping for smaller screens */
+}
+
+/* Label styles */
+.status-filter label {
+    margin-right: 4px; /* Space between label and dropdown */
+    font-weight: bold; /* Bold text for the label */
+    font-size: 14px; /* Smaller font size for label */
+    color: #333; /* Dark color for contrast */
+}
+
+/* Select styles */
+.status-filter select {
+    padding: 6px; /* Reduced padding for smaller size */
+    border: 1px solid #ccc; /* Light gray border */
+    border-radius: 4px; /* Rounded corners */
+    font-size: 12px; /* Smaller font size for dropdown */
+    color: #333; /* Text color */
+    background-color: #f9f9f9; /* Light background color */
+    transition: border-color 0.3s, background-color 0.3s; /* Smooth transition for hover effects */
+    width: auto; /* Adjust width to content */
+}
+
+/* Select hover effect */
+.status-filter select:hover {
+    border-color: #007bff; /* Blue border on hover */
+    background-color: #fff; /* White background on hover */
+}
+
+/* Select focus effect */
+.status-filter select:focus {
+    border-color: #007bff; /* Blue border on focus */
+    outline: none; /* Remove default outline */
+    background-color: #fff; /* White background on focus */
+}
+
 
 /* Responsive styles */
 @media (max-width: 768px) {
