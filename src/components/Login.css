@@ -85,6 +85,12 @@ h5{
     margin-top: 15px; /* Space above message */
     text-align: center; /* Center message text */
 }
+.links {
+    color: darkgray;
+    font-size: 0.9rem;
+    margin-top: 15px;
+    text-align: center; /* Optional: Center align the text */
+}
 
 @media (max-width: 480px) {
     .loginform {

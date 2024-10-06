@@ -27,8 +27,8 @@ const AddRecord = () => {
   });
 
   const [message, setMessage] = useState("");
-  const [loading, setLoading] = useState(true); // Loading state for dropdowns
-  const [Submitting, setSubmitting] = useState(false); // Loading state for form submission
+  const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
   const navigate = useNavigate();
   const { isMobile } = useDeviceDetect();
 
@@ -44,35 +44,27 @@ const AddRecord = () => {
     driverNames: [],
   });
 
-  // Function to get current Oman time formatted as required
-  const getCurrentOmanDateTime = () => {
-    const options = {
-      timeZone: 'Asia/Muscat',
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit',
-      hour: '2-digit',
-      minute: '2-digit',
-      second: '2-digit',
-    };
-    
-    const dateTimeFormat = new Intl.DateTimeFormat('en-GB', options);
-    const formattedDateTime = dateTimeFormat.format(new Date());
+  const getCurrentLocalDateTime = () => {
+    const localDate = new Date();
 
-    const [date, time] = formattedDateTime.split(', ');
-    const [day, month, year] = date.split('/');
-    const [hour, minute, second, period] = time.split(/:| /);
+    // Format to YYYY-MM-DDTHH:mm for datetime-local input
+    const year = localDate.getFullYear();
+    const month = String(localDate.getMonth() + 1).padStart(2, '0');
+    const day = String(localDate.getDate()).padStart(2, '0');
+    const hours = String(localDate.getHours()).padStart(2, '0');
+    const minutes = String(localDate.getMinutes()).padStart(2, '0');
 
-    return {
-      dateISO: `${year}-${month}-${day}T${hour}:${minute}`,
-      formatted: `${day}/${month}/${year} ${hour}:${minute}:${second} ${period}`,
-    };
+    const dateTimeLocal = `${year}-${month}-${day}T${hours}:${minutes}`;
+
+    // Format to DD/MM/YYYY HH:mm:ss if needed elsewhere
+    const dateISO = `${day}/${month}/${year} ${hours}:${minutes}`;
+
+    return { dateISO, dateTimeLocal };
   };
 
-  // Fetch dropdown data on component mount
   useEffect(() => {
     const fetchDropdownData = async () => {
-      setLoading(true); // Start loading
+      setLoading(true);
       try {
         const response = await axios.get(
           `${process.env.REACT_APP_BASE_API_URL}/dashboarddropdown`,
@@ -97,14 +89,12 @@ const AddRecord = () => {
             offloadPoints: [...new Set(results.map((item) => item.offload_Point))],
             driverNames: [...new Set(results.map((item) => item.driver_Name))],
           });
-
-          // Set initial date and time in Oman format
-          const { dateISO } = getCurrentOmanDateTime();
+          const { dateTimeLocal } = getCurrentLocalDateTime();
           setFormData(prevState => ({
             ...prevState,
-            journey_Plane_Date: dateISO,
-            next_Arrival_Date: dateISO,
-            ivms_Check_Date: dateISO,
+            journey_Plane_Date: dateTimeLocal,
+            next_Arrival_Date: dateTimeLocal,
+            ivms_Check_Date: dateTimeLocal,
           }));
         } else {
           console.error('Unexpected response structure:', results);
@@ -112,7 +102,7 @@ const AddRecord = () => {
       } catch (error) {
         console.error("Error fetching dropdown data:", error);
       } finally {
-        setLoading(false); // Stop loading
+        setLoading(false);
       }
     };
 
@@ -121,13 +111,11 @@ const AddRecord = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value.toUpperCase() }); // Convert to uppercase
+    setFormData({ ...formData, [name]: value.toUpperCase() });
   };
 
-  // Function to convert local date to UTC
   const convertToUTC = (localDateTime) => {
-    const date = new Date(localDateTime);
-    return date.toISOString(); // Converts to UTC
+    return new Date(localDateTime).toISOString();
   };
 
   const handleSubmit = async (e) => {
@@ -139,7 +127,7 @@ const AddRecord = () => {
       return;
     }
 
-    setSubmitting(true); // Start submission loading
+    setSubmitting(true);
 
     const dataToSubmit = {
       ...formData,
@@ -157,21 +145,23 @@ const AddRecord = () => {
         }
       );
       setMessage(response.data.message);
-      alert("Record added successfully!");
+      setTimeout(() => {
+        setMessage('');
+      }, 3000);
 
-      // Reset form to current Oman date and time
-      const { dateISO } = getCurrentOmanDateTime();
+      // Reset form to current local date and time
+      const { dateTimeLocal } = getCurrentLocalDateTime();
       setFormData({
         tracker: "FRESH",
         sjm: "",
         journey_Plane_No: "",
-        journey_Plane_Date: dateISO,
+        journey_Plane_Date: dateTimeLocal,
         scheduled_Vehicle: "",
         carrier: "",
         jp_Status: "IN TRANSIT",
-        next_Arrival_Date: dateISO,
+        next_Arrival_Date: dateTimeLocal,
         next_Point: "",
-        ivms_Check_Date: dateISO,
+        ivms_Check_Date: dateTimeLocal,
         ivms_Point: "",
         destination: "",
         offload_Point: "",
@@ -185,7 +175,7 @@ const AddRecord = () => {
       console.error("Error details:", error.response ? error.response.data : error.message);
       setMessage("Error adding record: " + (error.response ? error.response.data.message : "Network error."));
     } finally {
-      setSubmitting(false); // Stop submission loading
+      setSubmitting(false);
     }
   };
 
@@ -200,290 +190,292 @@ const AddRecord = () => {
         <div>Loading dropdown data...</div>
       ) : (
         <form onSubmit={handleSubmit} className="form-grid mannual_form_grid">
-<div className="block-display">
-<label className="form-label-addrecord">
-  Journey Plan No <span className="required">*</span>
-</label>
-<input
-  type="text"
-  className="form-input-addrecord"
-  name="journey_Plane_No"
-  value={formData.journey_Plane_No}
-  onChange={handleChange}
-  list="journey-list"
-  required
-/>
-</div>
+          <div className="block-display">
+            <label className="form-label-addrecord">
+              Journey Plan No <span className="required">*</span>
+            </label>
+            <input
+              type="text"
+              className="form-input-addrecord"
+              name="journey_Plane_No"
+              value={formData.journey_Plane_No}
+              onChange={handleChange}
+              list="journey-list"
+              required
+            />
+          </div>
+          <div>
+            <label className="form-label-addrecord">
+              Journey Plan Date & Time <span className="required">*</span>
+            </label>
+            <input
+              type="datetime-local"
+              className="form-input-addrecord"
+              name="journey_Plane_Date"
+              value={formData.journey_Plane_Date}
+              onChange={handleChange}
+              required
+            />
+          </div>
 
-<div>
-<label className="form-label-addrecord">
-  Journey Plan Date & Time <span className="required">*</span>
-</label>
-<input
-  type="datetime-local"
-  className="form-input-addrecord"
-  name="journey_Plane_Date"
-  value={formData.journey_Plane_Date}
-  onChange={handleChange}
-  required
-/>
-</div>
+          <div>
+            <label className="form-label-addrecord">
+              Journey Plan Status
+            </label>
+            <select
+              className="form-input-addrecord form-select-addrecord"
+              name="jp_Status"
+              value={formData.jp_Status}
+              onChange={handleChange}
+            >
+              <option value="">Select Status</option>
+              <option value="IN TRANSIT">IN TRANSIT</option>
+              <option value="CLOSED">CLOSED</option>
+            </select>
+          </div>
 
-<div>
-<label className="form-label-addrecord">
-  Journey Plan Status 
-</label>
-<select
-  className="form-input-addrecord form-select-addrecord"
-  name="jp_Status"
-  value={formData.jp_Status}
-  onChange={handleChange}
->
-  <option value="">Select Status</option>
-  <option value="IN TRANSIT">IN TRANSIT</option>
-  <option value="CLOSED">CLOSED</option>
-</select>
-</div>
+          <div>
+            <label className="form-label-addrecord">
+              Scheduled Vehicle <span className="required">*</span>
+            </label>
+            <input
+              type="text"
+              className="form-input-addrecord"
+              name="scheduled_Vehicle"
+              value={formData.scheduled_Vehicle}
+              onChange={handleChange}
+              list="vehicle-list"
+              required
+            />
+            <datalist id="vehicle-list">
+              {dropdownData.scheduledVehicles.map((vehicle, index) => (
+                <option key={index} value={vehicle} />
+              ))}
+            </datalist>
+          </div>
 
-<div>
-<label className="form-label-addrecord">
-  Scheduled Vehicle <span className="required">*</span> 
-</label>
-<input
-  type="text"
-  className="form-input-addrecord"
-  name="scheduled_Vehicle"
-  value={formData.scheduled_Vehicle}
-  onChange={handleChange}
-  list="vehicle-list"
-  required
-/>
-<datalist id="vehicle-list">
-  {dropdownData.scheduledVehicles.map((vehicle, index) => (
-    <option key={index} value={vehicle} />
-  ))}
-</datalist>
-</div>
+          <div>
+            <label className="form-label-addrecord">
+              Carrier <span className="required">*</span>
+            </label>
+            <input
+              type="text"
+              className="form-input-addrecord"
+              name="carrier"
+              value={formData.carrier}
+              onChange={handleChange}
+              list="carrier-list"
+              required
+            />
+            <datalist id="carrier-list">
+              {dropdownData.carriers.map((carrier, index) => (
+                <option key={index} value={carrier} />
+              ))}
+            </datalist>
+          </div>
 
-<div>
-<label className="form-label-addrecord">
-  Carrier <span className="required">*</span>
-</label>
-<input
-  type="text"
-  className="form-input-addrecord"
-  name="carrier"
-  value={formData.carrier}
-  onChange={handleChange}
-  list="carrier-list"
-  required
-/>
-<datalist id="carrier-list">
-  {dropdownData.carriers.map((carrier, index) => (
-    <option key={index} value={carrier} />
-  ))}
-</datalist>
-</div>
+          <div>
+            <label className="form-label-addrecord">
+              Next Point
+            </label>
+            <input
+              type="text"
+              className="form-input-addrecord"
+              name="next_Point"
+              value={formData.next_Point}
+              onChange={handleChange}
+              list="next-point-list"
+            />
+            <datalist id="next-point-list">
+              {dropdownData.nextPoints.map((point, index) => (
+                <option key={index} value={point} />
+              ))}
+            </datalist>
+          </div>
 
-<div>
-<label className="form-label-addrecord">
-  Next Point 
-</label>
-<input
-  type="text"
-  className="form-input-addrecord"
-  name="next_Point"
-  value={formData.next_Point}
-  onChange={handleChange}
-  list="next-point-list"
-/>
-<datalist id="next-point-list">
-  {dropdownData.nextPoints.map((point, index) => (
-    <option key={index} value={point} />
-  ))}
-</datalist>
-</div>
+          <div>
+            <label className="form-label-addrecord">
+              Next Arrival Date & Time
+            </label>
+            <input
+              type="datetime-local"
+              className="form-input-addrecord"
+              name="next_Arrival_Date"
+              value={formData.next_Arrival_Date}
+              onChange={handleChange}
+            />
+          </div>
 
-<div>
-<label className="form-label-addrecord">
-  Next Arrival Date & Time 
-</label>
-<input
-  type="datetime-local"
-  className="form-input-addrecord"
-  name="next_Arrival_Date"
-  value={formData.next_Arrival_Date}
-  onChange={handleChange}
-/>
-</div>
+          <div>
+            <label className="form-label-addrecord">
+              IVMS Point
+            </label>
+            <input
+              type="text"
+              className="form-input-addrecord"
+              name="ivms_Point"
+              value={formData.ivms_Point}
+              onChange={handleChange}
+              list="ivms-point-list"
+            />
+            <datalist id="ivms-point-list">
+              {dropdownData.ivmsPoints.map((point, index) => (
+                <option key={index} value={point} />
+              ))}
+            </datalist>
+          </div>
 
-<div>
-<label className="form-label-addrecord">
-  IVMS Point 
-</label>
-<input
-  type="text"
-  className="form-input-addrecord"
-  name="ivms_Point"
-  value={formData.ivms_Point}
-  onChange={handleChange}
-  list="ivms-point-list"
-/>
-<datalist id="ivms-point-list">
-  {dropdownData.ivmsPoints.map((point, index) => (
-    <option key={index} value={point} />
-  ))}
-</datalist>
-</div>
+          <div>
+            <label className="form-label-addrecord">
+              IVMS Check Date & Time
+            </label>
+            <input
+              type="datetime-local"
+              className="form-input-addrecord"
+              name="ivms_Check_Date"
+              value={formData.ivms_Check_Date}
+              onChange={handleChange}
+            />
+          </div>
 
-<div>
-<label className="form-label-addrecord">
-  IVMS Check Date & Time 
-</label>
-<input
-  type="datetime-local"
-  className="form-input-addrecord"
-  name="ivms_Check_Date"
-  value={formData.ivms_Check_Date}
-  onChange={handleChange}
-/>
-</div>
+          <div>
+            <label className="form-label-addrecord">
+              Offload Point
+            </label>
+            <input
+              type="text"
+              className="form-input-addrecord"
+              name="offload_Point"
+              value={formData.offload_Point}
+              onChange={handleChange}
+              list="offload-point-list"
+            />
+            <datalist id="offload-point-list">
+              {dropdownData.offloadPoints.map((point, index) => (
+                <option key={index} value={point} />
+              ))}
+            </datalist>
+          </div>
 
-<div>
-<label className="form-label-addrecord">
-  Offload Point 
-</label>
-<input
-  type="text"
-  className="form-input-addrecord"
-  name="offload_Point"
-  value={formData.offload_Point}
-  onChange={handleChange}
-  list="offload-point-list"
-/>
-<datalist id="offload-point-list">
-  {dropdownData.offloadPoints.map((point, index) => (
-    <option key={index} value={point} />
-  ))}
-</datalist>
-</div>
+          <div>
+            <label className="form-label-addrecord">
+              Destination
+            </label>
+            <input
+              type="text"
+              className="form-input-addrecord"
+              name="destination"
+              value={formData.destination}
+              onChange={handleChange}
+              list="destination-list"
+            />
+            <datalist id="destination-list">
+              {dropdownData.destinations.map((destination, index) => (
+                <option key={index} value={destination} />
+              ))}
+            </datalist>
+          </div>
 
-<div>
-<label className="form-label-addrecord">
-  Destination 
-</label>
-<input
-  type="text"
-  className="form-input-addrecord"
-  name="destination"
-  value={formData.destination}
-  onChange={handleChange}
-  list="destination-list"
-/>
-<datalist id="destination-list">
-  {dropdownData.destinations.map((destination, index) => (
-    <option key={index} value={destination} />
-  ))}
-</datalist>
-</div>
+          <div>
+            <label className="form-label-addrecord">
+              Driver Name
+            </label>
+            <input
+              type="text"
+              className="form-input-addrecord"
+              name="driver_Name"
+              value={formData.driver_Name}
+              onChange={handleChange}
+              list="driver-name-list"
+            />
+            <datalist id="driver-name-list">
+              {dropdownData.driverNames.map((driver, index) => (
+                <option key={index} value={driver} />
+              ))}
+            </datalist>
+          </div>
 
+          <div>
+            <label className="form-label-addrecord">
+              Accommodation
+            </label>
+            <input
+              type="text"
+              className="form-input-addrecord"
+              name="accommodation"
+              value={formData.accommodation}
+              onChange={handleChange}
+            />
+          </div>
 
+          <div>
+            <label className="form-label-addrecord">
+              Journey Manager
+            </label>
+            <input
+              type="text"
+              className="form-input-addrecord"
+              name="jm"
+              value={formData.jm}
+              onChange={handleChange}
+            />
+          </div>
 
-<div>
-<label className="form-label-addrecord">
-  Driver Name 
-</label>
-<input
-  type="text"
-  className="form-input-addrecord"
-  name="driver_Name"
-  value={formData.driver_Name}
-  onChange={handleChange}
-  list="driver-name-list"
-/>
-<datalist id="driver-name-list">
-  {dropdownData.driverNames.map((driver, index) => (
-    <option key={index} value={driver} />
-  ))}
-</datalist>
-</div>
-<div>
-<label className="form-label-addrecord">
-  Accommodation 
-</label>
-<input
-  type="text"
-  className="form-input-addrecord"
-  name="accommodation"
-  value={formData.accommodation}
-  onChange={handleChange}
-/>
-</div>
+          <div>
+            <label className="form-label-addrecord">
+              Sr. Journey Manager <span className="required">*</span>
+            </label>
+            <input
+              type="text"
+              className="form-input-addrecord"
+              name="sjm"
+              value={formData.sjm}
+              onChange={handleChange}
+              list="sjm-list"
+              required
+            />
+            <datalist id="sjm-list">
+              {dropdownData.sjms.map((sjm, index) => (
+                <option key={index} value={sjm} />
+              ))}
+            </datalist>
+          </div>
 
-<div>
-<label className="form-label-addrecord">
-  Journey Manager 
-</label>
-<input
-  type="text"
-  className="form-input-addrecord"
-  name="jm"
-  value={formData.jm}
-  onChange={handleChange}
-/>
-</div>
-<div>
-<label className="form-label-addrecord">
-   Sr. Journey Manager <span className="required">*</span>
-</label>
-<input type="text"
-className="form-input-addrecord"
-name="sjm"
-value={formData.sjm}
-onChange={handleChange}
-list="sjm-list"
-required
-/>
-<datalist id="sjm-list">
-  {dropdownData.sjms.map((sjm, index) => (
-    <option key={index} value={sjm} />
-      ))}
-    </datalist>
-</div>
-<div className="block-display">
+          <div className="block-display">
             <label className="form-label-addrecord">Tracker</label>
             <input
-                type="text"
-                className="form-input-addrecord"
-                name="tracker"
-                value={formData.tracker}
-                onChange={handleChange}
-                list="tracker-list"
+              type="text"
+              className="form-input-addrecord"
+              name="tracker"
+              value={formData.tracker}
+              onChange={handleChange}
+              list="tracker-list"
             />
             <datalist id="tracker-list">
-                {dropdownData.trackers.map((tracker, index) => (
-                    <option key={index} value={tracker} />
-                ))}
+              {dropdownData.trackers.map((tracker, index) => (
+                <option key={index} value={tracker} />
+              ))}
             </datalist>
-        </div>
+          </div>
 
-        <div className="block-display">
+          <div className="block-display">
             <label className="form-label-addrecord">Remarks</label>
             <textarea
-                className="form-input-addrecord"
-                name="remarks"
-                value={formData.remarks}
-                onChange={handleChange}
+              className="form-input-addrecord"
+              name="remarks"
+              value={formData.remarks}
+              onChange={handleChange}
             />
-        </div>
-<button type="submit" className="submit-button-addrecord">
-Add Record
-</button>
-{message && <div className="message-addrecord">{message}</div>}
-</form>
-)}
-</div>
-);
+          </div>
+
+          <button type="submit" className="submit-button-addrecord">
+            Add Record
+          </button>
+          {message && <div className="message-addrecord">{message}</div>}
+        </form>
+      )}
+    </div>
+  );
 };
 
 export default AddRecord;

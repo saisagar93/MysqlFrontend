@@ -621,14 +621,26 @@ const ModifyRecords = () => {
                 setMessage('Journey Plane No is required for updating.');
                 return;
             }
+            
+            // Convert dates to UTC before sending
+        const dataToUpdate = {
+            ...formData,
+            journey_Plane_Date: moment(formData.journey_Plane_Date).utc().format(),
+            next_Arrival_Date: moment(formData.next_Arrival_Date).utc().format(),
+            ivms_Check_Date: moment(formData.ivms_Check_Date).utc().format(),
+        };
+
             const token = localStorage.getItem("token");
-            await axios.put(`${process.env.REACT_APP_BASE_API_URL}/modifyRecord/${formData.journey_Plane_No}`, formData, {
+            await axios.put(`${process.env.REACT_APP_BASE_API_URL}/modifyRecord/${formData.journey_Plane_No}`, dataToUpdate, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             setMessage('Record updated successfully!');
-            alert('Record updated successfully!'); // Alert for success
             await fetchRecords();
             setIsEditing(false);
+
+            setTimeout(() => {
+                setMessage('');
+            }, 3000);
         } catch (error) {
             console.error('Error updating record:', error);
             setMessage('Error updating record. Please try again.');
@@ -636,16 +648,25 @@ const ModifyRecords = () => {
     };
 
     const handleDelete = async () => {
+        // Ask for confirmation
+        const confirmed = window.confirm("Are you sure you want to delete this record?");
+    
+        if (!confirmed) {
+        return; 
+        }
+        
         try {
             const token = localStorage.getItem("token");
             await axios.delete(`${process.env.REACT_APP_BASE_API_URL}/deleteRecord/${formData.journey_Plane_No}`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             setMessage('Record deleted successfully!');
-            alert('Record deleted successfully!'); // Alert for success
             await fetchRecords(); // Ensure the latest data is fetched
-            
             setIsEditing(false);
+
+            setTimeout(() => {
+                setMessage('');
+            }, 3000);
         } catch (error) {
             console.error('Error deleting record:', error);
             setMessage('Error deleting record. Please try again.');

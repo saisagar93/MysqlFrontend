@@ -1,7 +1,7 @@
 .containermainpage {
-    max-width: 1000px; /* Maximum width for the container */
+    max-width: 650px; /* Maximum width for the container */
     margin: 10px auto; /* Centering the container */
-    padding: 20px; /* Padding inside the container */
+    padding: 40px; /* Padding inside the container */
     background-color: #f4f4f4; /* Light background color */
     border-radius: 10px; /* Rounded corners */
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); /* Subtle shadow */
@@ -69,6 +69,19 @@
 .btn-dangermain:hover {
     background-color: #c82333; /* Darker red on hover */
 }
+
+.containermainpage {
+    position: relative;
+    top: 10px; /* Moves the element down */
+    left: 0px;
+  }
+   
+  .containermainpage {
+    position: absolute;
+    top: 150px; /* Moves the element 50px from the top */
+    right: 0; /* Aligns the element to the right */
+  }
+
 
 /* Responsive styles */
 @media (max-width: 600px) {

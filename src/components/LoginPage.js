@@ -72,8 +72,11 @@ const LoginPage = ({ setIsAuthenticated }) => {
                     />
                 </div>
                 <button type="submit" className="login-button">Login</button>
-                <button type="button" className="login-button" id="signup-submit-button" onClick={handleSignup}> Create account </button>
-                
+                <div className="links">
+                    <p> {handleSignup}
+                        You don't have an account? <a href="/signup">Sign Up</a>
+                    </p>
+                    </div>
                 <div className="logo-container">
                     <h5> Powered by </h5>
                     <img src='bayanat.png' alt="Powered by" className="powered-by" />

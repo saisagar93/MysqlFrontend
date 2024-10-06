@@ -24,10 +24,12 @@
     font-size: 14px; /* Adjusted font size */
     transition: background-color 0.3s; /* Smooth transition for hover effects */
 }
-.modify-btn-edit{
-    background-color:lightgreen;
+
+.modify-btn-edit {
+    background-color: lightgreen;
     color: black;
 }
+
 /* Primary Button (Update) */
 .modify-btn-primary {
     background-color: #007bff; /* Blue */
@@ -97,9 +99,8 @@
 
 /* Table styles */
 .modify-record-table-container {
-    max-height: 680px; /* Height for scrolling */
+    max-height: 640px; /* Height for scrolling */
     overflow-y: auto; /* Enable scrolling */
-    margin-top: 4px; /* Space above the table */
 }
 
 .modify-record-table {
@@ -115,21 +116,21 @@
     border: 1px solid #ddd; /* Light border for cells */
     text-align: left;
     font-size: 12px; /* Smaller font size for table cells */
-    padding: 4px; /* Padding for header */
+    padding: 2px; /* Padding for header */
     width: 60px; /* Fixed width for consistency */
-    height: 28px; /* Height for header */
 }
 
 .modify-record-table th {
-    background-color:lightgray; /* Light cyan background for header */
-    color:#444444; /* Dark teal text for header */
+    background-color: lightgray; /* Light background for header */
+    color: #444444; /* Dark text for header */
     font-weight: bold; /* Bold header text */
     height: 30px; /* Slightly increased height for header */
 }
 
 .modify-record-table td {
-    padding: 1px; /* Reduced padding for compactness */
-    height: 24px; /* Reduced height for table cells */
+    padding: 4px; /* Adjusted padding to reduce height */
+    height: auto; /* Set height to auto for dynamic sizing */
+    height: 20px; /* Minimum height for compactness */
 }
 
 .modify-record-table tr:nth-child(even) {
@@ -146,6 +147,7 @@
     margin-top: 10px;
     font-size: 14px; /* Adjusted font size for messages */
 }
+
 /* Dropdown container */
 .status-filter {
     margin: 4px 0; /* Space above and below */
@@ -186,7 +188,6 @@
     outline: none; /* Remove default outline */
     background-color: #fff; /* White background on focus */
 }
-
 
 /* Responsive styles */
 @media (max-width: 768px) {

@@ -134,14 +134,14 @@ button.dashboard-button.primary {
 .table-scroll1 {
     margin-top: 20px;
     overflow-x: auto;
-    margin: 4px 0;
-    max-height: 250px; /* Set maximum height */
+    margin: 8px 0;
+    max-height: 220px; /* Set maximum height */
     overflow-y: auto;  /* Enable vertical scrolling */
     width: 49%;
 }
 
 .main-table.table-scroll {
-    max-height: 260px; /* Set maximum height */
+    max-height: 320px; /* Set maximum height */
     overflow-y: auto;  /* Enable vertical scrolling */
     border: 2px solid rgb(130,130,130);
     border-radius: 4px;
