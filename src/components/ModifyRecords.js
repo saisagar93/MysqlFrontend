@@ -76,7 +76,7 @@ const ModifyRecords = () => {
                 headers: { Authorization: `Bearer ${token}` }
             });
     
-            console.log('dropdown data', response.data);   
+            // console.log('dropdown data', response.data);   
     
             const results = response.data; // Store the fetched data
     
@@ -103,15 +103,25 @@ const ModifyRecords = () => {
         setSearchTerm(e.target.value);
     };
 
-    const filteredSearchRecords = filteredRecords.filter(record =>
-        record.JOURNEY_PLANE_NO.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        record.DRIVER_NAME.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        record.SJM.toLowerCase().includes(searchTerm.toLowerCase())  ||
-        record.CARRIER.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        record.SCHEDULED_VEHICLE.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        record.TRACKER.toLowerCase().includes(searchTerm.toLowerCase())
-        
-    );
+
+    const filteredSearchRecords = filteredRecords.filter(record => {
+        const journeyPlaneNo = record.JOURNEY_PLANE_NO || '';
+        const driverName = record.DRIVER_NAME || '';
+        const sjm = record.SJM || '';
+        const carrier = record.CARRIER || '';
+        const scheduledVehicle = record.SCHEDULED_VEHICLE || '';
+        const tracker = record.TRACKER || '';
+    
+        return (
+            journeyPlaneNo.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            driverName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            sjm.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            carrier.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            scheduledVehicle.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            tracker.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+    });
+
     
     const handleChange = (e) => {
         const { name, value } = e.target;
