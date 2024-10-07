@@ -17,7 +17,7 @@ body {
 .dashboard-header {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 5px;
+    margin-bottom: 2px;
 }
 
 .dashboard-button {
@@ -53,7 +53,7 @@ button.dashboard-button.primary {
 /* Title */
 .dashboard-title {
     text-align: center;
-    font-size: 1.8rem;
+    font-size: 1.4rem;
     margin: 2px 0;
 }
 
@@ -89,13 +89,13 @@ button.dashboard-button.primary {
     display: flex;
     justify-content: space-between;
     flex-wrap: wrap;
-    margin-bottom: 5px;
+    margin-bottom: 2px;
 }
 
 .card {
     flex: 1 1 calc(25% - 10px);
     margin: 10px;
-    padding: 10px;
+    padding: 7px;
     border-radius: 6px;
     color: white;
     font-size: 14px;
@@ -135,7 +135,7 @@ button.dashboard-button.primary {
     margin-top: 20px;
     overflow-x: auto;
     margin: 8px 0;
-    max-height: 220px; /* Set maximum height */
+    max-height: 155px; /* Set maximum height */
     overflow-y: auto;  /* Enable vertical scrolling */
     width: 49%;
 }
@@ -151,14 +151,15 @@ table {
     width: 100%;
     border-collapse: collapse;
     background-color: #fff;
-    font-family: Arial, sans-serif;
+    font-family: 'Roboto', sans-serif;
+    line-height: 1.1;
 }
 
 th, td {
-    padding: 2px 4px; /* Reduced padding to decrease row height */
+    padding: 2px 3px; /* Reduced padding to decrease row height */
     text-align: left;
     border-bottom: 1px solid #040303;
-    font-size: 12px; /* Reduced font size */
+    font-size: 11px; /* Reduced font size */
     border: 1px solid rgb(184, 184, 184);
 }
 
@@ -167,7 +168,7 @@ th {
 }
 
 /* Total Row */
-tbody tr:last-child td {
+.aggregate-tables tr:last-child td {
     font-weight: bold;
 }
 
@@ -189,7 +190,7 @@ tbody tr:last-child td {
 .aggregate-table {
 
     flex: 1 1 48%; /* Each table takes roughly 50% of the width with small gap */
-    max-height: 300px;
+    max-height: 200px;
     margin-right: 6%; /* Small gap between tables */
     overflow-x: auto; /* Table scroll for overflow */
     border-radius: 4px;
@@ -249,6 +250,6 @@ tbody tr:last-child td {
     }
 
     th, td {
-        font-size: 10px; /* Smaller font size for mobile */
+        font-size: 8px; /* Smaller font size for mobile */
     }
 }
