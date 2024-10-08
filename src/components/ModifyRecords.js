@@ -43,11 +43,14 @@ const ModifyRecords = () => {
     const [isEditing, setIsEditing] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
     const [selectedStatus, setSelectedStatus] = useState('IN TRANSIT');
+    const [selectedTracker, setSelectedTracker] = useState(''); // for tracker dropdown 
+
 
     useEffect(() => {
         fetchRecords();
         fetchDropdownData();
-    }, [selectedStatus]);
+    }, [selectedStatus,  selectedTracker]);
+
 
     const fetchRecords = async () => {
         try {
@@ -56,9 +59,15 @@ const ModifyRecords = () => {
             const response = await axios.get(`${process.env.REACT_APP_BASE_API_URL}/dashboard`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
-            // Convert selectedStatus to lowercase for case-insensitive comparison
+            
             const normalizedStatus = selectedStatus.toLowerCase();
-            const filtered = response.data.filter(item => item.JP_STATUS.toLowerCase() === normalizedStatus);
+            const normalizedTracker = selectedTracker.toLowerCase();
+            
+            const filtered = response.data.filter(item => 
+                item.JP_STATUS.toLowerCase() === normalizedStatus && 
+                (selectedTracker === '' || item.TRACKER.toLowerCase() === normalizedTracker)
+            );
+    
             setFilteredRecords(filtered);
         } catch (error) {
             console.error('Error fetching records:', error);
@@ -68,7 +77,7 @@ const ModifyRecords = () => {
         }
     };
     
-
+    
     const fetchDropdownData = async () => {
         try {
             const token = localStorage.getItem("token");
@@ -243,7 +252,7 @@ const ModifyRecords = () => {
                         placeholder="Search..."
                         value={searchTerm}
                         onChange={handleSearchChange}
-                        className="search-input"
+                        className="search-inputModify"
                          />
                     </div>
                     )}
@@ -256,9 +265,20 @@ const ModifyRecords = () => {
                         </select>
                         </div>
                     )}
+                    {!isEditing && (
+                    <div className="status-filter">
+                    <label htmlFor="trackerSelect">Filter By Tracker:</label>
+                    <select id="trackerSelect" value={selectedTracker} onChange={(e) => setSelectedTracker(e.target.value)}>
+                        <option value="">All Trackers</option>
+                        {dropdownData.trackers.map((tracker, index) => (
+                            <option key={index} value={tracker}>{tracker}</option>
+                        ))}
+                    </select>
+                    </div>
+                    )}
                 </div>
             </header>
-
+            
             {isLoading ? (
                 <p>Loading records...</p>
             ) : isEditing ? (

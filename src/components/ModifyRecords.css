@@ -207,23 +207,23 @@
 }
 
 /* Search input styles */
-.search-input {
+.search-inputModify {
     padding: 2px; /* Padding for input */
     border: 1px solid #090909; /* Light gray border */
     border-radius: 4px; /* Rounded corners */
     font-size: 14px; /* Font size for input */
-    width: 1140px; /* Set a width for the search bar */
+    width: 900px; /* Set a width for the search bar */
     height: 20px;
     transition: border-color 0.3s; /* Transition for focus effect */
 }
 
 /* Search input hover effect */
-.search-input:hover {
+.search-inputModify:hover {
     border-color: #007bff; /* Change border color on hover */
 }
 
 /* Search input focus effect */
-.search-input:focus {
+.search-inputModify:focus {
     border-color: #007bff; /* Change border color on focus */
     outline: none; /* Remove default outline */
 }
@@ -266,11 +266,14 @@
         margin-bottom: 10px; /* Space below search bar */
     }
 
-    .search-input {
-        width: 100%; /* Full width for input */
+    .search-inputModify {
+        width: 94%; /* Full width for input */
         padding: 10px; /* Increased padding for better touch targets */
     }
 
+    .modify-btn-primary {
+        width: 100%;
+    }
     .status-filter {
         width: 100%; /* Full width for dropdown */
     }
