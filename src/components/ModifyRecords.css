@@ -1,16 +1,16 @@
-/* Header Styles */
+
 .modify-records-header1 {
     background-color: lightsteelblue;
     color: white;
     padding: 8px;
     display: flex;
-    align-items: center; /* Align items in the center */
-    justify-content: space-between; /* Space out elements */
-    flex-wrap: wrap; /* Allow wrapping on smaller screens */
+    align-items: center; 
+    justify-content: space-between; 
+    flex-wrap: wrap; 
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
-/* Dropdown container */
+
 .filter-section {
     display: flex;
     align-items: center;
@@ -21,60 +21,58 @@
     display: flex;
     align-items: center;
     gap: 4px;
-    margin-left: 12px; /* Remove margin to align it to the left */
-    margin-right: auto; /* Allow the element to take up remaining space on the left */
+    margin-left: 12px; 
+    margin-right: auto; 
 }
-/* Label styles */
+
 .filter-section label { 
-    font-weight: bold; /* Bold text for the label */
-    font-size: 14px; /* Smaller font size for label */
-    color: #333; /* Dark color for contrast */
+    font-weight: bold; 
+    font-size: 14px; 
+    color: #333; 
 }
 .status-filter1
 { 
-    font-weight: bold; /* Bold text for the label */
-    font-size: 14px; /* Smaller font size for label */
-    color: #333; /* Dark color for contrast */
+    font-weight: bold; 
+    font-size: 14px; 
+    color: #333; 
 }
-/* Select styles */
+
 .filter-section select {
-    padding: 6px; /* Reduced padding for smaller size */
-    border: 1px solid #ccc; /* Light gray border */
-    border-radius: 4px; /* Rounded corners */
-    font-size: 12px; /* Smaller font size for dropdown */
-    color: #333; /* Text color */
-    background-color: #f9f9f9; /* Light background color */
-    transition: border-color 0.3s, background-color 0.3s; /* Smooth transition for hover effects */
-    width: auto; /* Adjust width to content */
+    padding: 6px; 
+    border: 1px solid #ccc; 
+    border-radius: 4px;
+    font-size: 12px; 
+    color: #333; 
+    background-color: #f9f9f9; 
+    transition: border-color 0.3s, background-color 0.3s;
+    width: auto;
 }
 
 .status-filter1 select {
-    padding: 6px; /* Reduced padding for smaller size */
-    border: 1px solid #ccc; /* Light gray border */
-    border-radius: 4px; /* Rounded corners */
-    font-size: 12px; /* Smaller font size for dropdown */
-    color: #333; /* Text color */
-    background-color: #f9f9f9; /* Light background color */
-    transition: border-color 0.3s, background-color 0.3s; /* Smooth transition for hover effects */
-    width: auto; /* Adjust width to content */
+    padding: 6px; 
+    border: 1px solid #ccc; 
+    border-radius: 4px; 
+    color: #333;
+    background-color: #f9f9f9;
+    transition: border-color 0.3s, background-color 0.3s; 
+    width: auto; 
 }
 
 .status-filter1 select:hover {
-    border-color: #007bff; /* Blue border on hover */
-    background-color: #fff; /* White background on hover */
+    border-color: #007bff; 
+    background-color: #fff; 
 }
 
-/* Select hover effect */
 .filter-section select:hover {
-    border-color: #007bff; /* Blue border on hover */
-    background-color: #fff; /* White background on hover */
+    border-color: #007bff; 
+    background-color: #fff; 
 }
 
-/* Select focus effect */
+
 .filter-section select:focus {
-    border-color: #007bff; /* Blue border on focus */
-    outline: none; /* Remove default outline */
-    background-color: #fff; /* White background on focus */
+    border-color: #007bff; 
+    outline: none; 
+    background-color: #fff; 
 }
 
 label {
@@ -86,14 +84,13 @@ label {
     border: 1px solid #ccc;
     border-radius: 5px;
     transition: border-color 0.3s;
-} */
+} 
 
 select:focus, input:focus {
     border-color: #007bff;
     outline: none;
 }
 
-/* Footer Styles */
 .modify-records-footer {
     display: flex;
     gap: 15px;
@@ -119,7 +116,7 @@ button:disabled {
     cursor: not-allowed;
 }
 
-/* Message Styles */
+
 .modify-message {
     padding: 2px;
     border: 1px solid #b2cdb8;
@@ -128,68 +125,67 @@ button:disabled {
     border-radius: 5px;
 }
 
-/* Loading Styles */
+
 .loading {
     text-align: center;
     font-size: 1.2em;
     margin-top: 50px;
 }
 .grid-item {
-    padding: 10px; /* Decrease from original padding */
+    padding: 10px; 
     font-size: 10px;
-    /* Other styles */
+
 }
-/* Grid Styles */
+
 .reactgrid {
     border: 1px solid #ccc;
     border-radius: 5px;
 }
 .grid-container {
-    width: 100%; /* Full width of the parent */
-    height: 600px; /* Fixed height for vertical scrolling */
-    overflow-x: auto; /* Enable horizontal scrolling */
-    overflow-y: auto; /* Enable vertical scrolling */
-    border: 2px solid rgb(11, 8, 8); /* Optional: Visual separation */
-    font-size: 14px; /* Font size */
-    font-family: 'Roboto', sans-serif; /* Font family */
+    width: 100%; 
+    height: 600px; 
+    overflow-x: auto; 
+    overflow-y: auto; 
+    border: 2px solid rgb(11, 8, 8); 
+    font-size: 14px; 
+    font-family: 'Roboto', sans-serif; 
 }
 
 .bold-header {
-    font-weight: bold; /* Make the text bold */
-    text-align: left; /* Optional: Align text to the left */
-    background-color: #f0f0f0; /* Optional: Background color for better visibility */
-    padding: 8px; /* Optional: Add some padding */
+    font-weight: bold; 
+    text-align: left; 
+    background-color: #f0f0f0; 
+    padding: 8px; 
 }
 
 
-/* Responsive Styles */
 @media (max-width: 768px) {
     .modify-records-header {
-        flex-direction: column; /* Stack items on smaller screens */
-        align-items: flex-start; /* Align items to the left */
+        flex-direction: column;
+        align-items: flex-start; 
     }
 
     .filter-section {
-        flex-wrap: wrap; /* Allow wrapping */
+        flex-wrap: wrap; 
     }
 
     select, input {
-        margin-bottom: 10px; /* Space below inputs on smaller screens */
-        min-width: 120px; /* Adjust minimum width */
+        margin-bottom: 10px; 
+        min-width: 120px; 
     }
 
     .modify-records-footer {
-        flex-direction: column; /* Stack buttons vertically */
-        align-items: stretch; /* Full width for buttons */
+        flex-direction: column; 
+        align-items: stretch; 
     }
 
     button {
-        min-width: 100%; /* Full width on smaller screens */
+        min-width: 100%; 
     }
 }
 
 @media (max-width: 480px) {
     label {
-        margin-bottom: 5px; /* Space between label and input */
+        margin-bottom: 5px; 
     }
 }

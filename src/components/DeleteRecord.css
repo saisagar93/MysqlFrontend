@@ -1,9 +1,9 @@
-/* General wrapper styles */
+
 .modify-records-wrapper {
     padding: 5px;
 }
 
-/* Header styles */
+
 .modify-records-header {
     display: flex;
     justify-content: space-between;
@@ -12,17 +12,17 @@
 
 .modify-button-group {
     display: flex;
-    gap: 10px; /* Space between buttons */
+    gap: 10px; 
 }
 
-/* Button styles */
+
 .modify-btn {
-    padding: 4px 12px; /* Adjusted padding */
+    padding: 4px 12px; 
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    font-size: 14px; /* Adjusted font size */
-    transition: background-color 0.3s; /* Smooth transition for hover effects */
+    font-size: 14px; 
+    transition: background-color 0.3s; 
 }
 
 .modify-btn-edit {
@@ -30,53 +30,53 @@
     color: black;
 }
 
-/* Primary Button (Update) */
+
 .modify-btn-primary {
-    background-color: #007bff; /* Blue */
+    background-color: #007bff; 
     color: white;
     margin-right: 10px;
 }
 
 .modify-btn-primary:hover {
-    background-color: #0056b3; /* Darker blue on hover */
+    background-color: #0056b3;
 }
 
-/* Danger Button (Delete) */
+
 .modify-btn-danger {
-    background-color: #dc3545; /* Red */
+    background-color: #dc3545; 
     color: white;
     margin-right: 10px;
 }
 
 .modify-btn-danger:hover {
-    background-color: #c82333; /* Darker red on hover */
+    background-color: #c82333;
 }
 
 .modify-btn-secondary {
-    background-color: grey; /* Grey */
+    background-color: grey; 
     color: white;
     margin-right: 10px;
 }
 
 .modify-btn-secondary:hover {
-    background-color: darkgray; /* Darker grey on hover */
+    background-color: darkgray; 
 }
 
-/* Info Button (Edit) */
+
 .modify-btn-info {
-    background-color: #17a2b8; /* Teal */
+    background-color: #17a2b8; 
     color: white;
 }
 
 .modify-btn-info:hover {
-    background-color: #138496; /* Darker teal on hover */
+    background-color: #138496; 
 }
 
-/* Form styles */
+
 .modify-edit-form {
     display: grid;
-    grid-template-columns: repeat(2, 1fr); /* Two columns for desktop */
-    gap: 5px; /* Reduced gap */
+    grid-template-columns: repeat(2, 1fr); 
+    gap: 5px; 
 }
 
 .modify-form-group {
@@ -87,204 +87,202 @@
 .modify-form-label {
     font-weight: bold;
     margin-bottom: 5px;
-    font-size: 14px; /* Increased font size for labels */
-    color: #333; /* Dark color for better contrast */
+    font-size: 14px; 
+    color: #333; 
 }
 
-/* Input and select styles */
+
 .modify-form-control {
-    padding: 6px; /* Reduced padding */
-    border: 1px solid #0a0909; /* Light gray border */
-    border-radius: 4px;
-    box-sizing: border-box; /* Include padding in width */
-    font-size: 14px; /* Adjusted font size for inputs */
+    padding: 6px;
+    border: 1px solid #0a0909; 
+    box-sizing: border-box; 
+    font-size: 14px; 
 }
 
-/* Table styles */
+
 .modify-record-table-container {
-    max-height: 640px; /* Height for scrolling */
-    overflow-y: auto; /* Enable scrolling */
+    max-height: 640px; 
+    overflow-y: auto; 
 }
 
 .modify-record-table {
     width: 100%;
     border-collapse: collapse;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Shadow for depth */
-    border-radius: 5px; /* Rounded corners */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); 
+    border-radius: 5px; 
     border: 2px solid rgb(6, 5, 5);
     font-family: 'Roboto', sans-serif;
-    font-size: 12px; /* Adjust as needed */
+    font-size: 12px;
     line-height: 1.1; 
 }
 
 .modify-record-table th,
 .modify-record-table td {
-    border: 1px solid #ddd; /* Light border for cells */
-    text-align: left;
-    font-size: 12px; /* Smaller font size for table cells */
-    padding: 2px; /* Padding for header */
-    width: 60px; /* Fixed width for consistency */
+    border: 1px solid #ddd;
+    font-size: 12px;
+    padding: 2px; 
+    width: 60px;
 }
 
 .modify-record-table th {
-    background-color: lightgray; /* Light background for header */
-    color: #444444; /* Dark text for header */
-    font-weight: bold; /* Bold header text */
-    height: 30px; /* Slightly increased height for header */
+    background-color: lightgray; 
+    color: #444444; 
+    font-weight: bold; 
+    height: 30px; 
 }
 
 .modify-record-table td {
-    height: auto; /* Set height to auto for dynamic sizing */
-    height: 2px; /* Minimum height for compactness */
+    height: auto; 
+    height: 2px; 
 }
 
 .modify-record-table tr:nth-child(even) {
-    background-color: #f9f9f9; /* Light gray for even rows */
+    background-color: #f9f9f9; 
 }
 
 .modify-record-table tr:hover {
-    background-color: #e0e0e0; /* Light gray on hover */
+    background-color: #e0e0e0;
 }
 
-/* Success and error message styles */
+
 .modify-message {
-    color: green; /* Default success color */
+    color: green; 
     margin-top: 10px;
-    font-size: 14px; /* Adjusted font size for messages */
+    font-size: 14px; 
 }
 
-/* Dropdown container */
+
 .status-filter {
-    margin: 2px 0; /* Space above and below */
-    display: flex; /* Flex for alignment */
-    align-items: center; /* Center align items */
-    flex-wrap: wrap; /* Allow wrapping for smaller screens */
+    margin: 2px 0; 
+    display: flex; 
+    align-items: center; 
+    flex-wrap: wrap; 
 }
 
-/* Label styles */
+
 .status-filter label {
-    margin-right: 4px; /* Space between label and dropdown */
-    font-weight: bold; /* Bold text for the label */
-    font-size: 14px; /* Smaller font size for label */
-    color: #333; /* Dark color for contrast */
+    margin-right: 4px; 
+    font-weight: bold; 
+    font-size: 14px; 
+    color: #333;
 }
 
-/* Select styles */
+
 .status-filter select {
-    padding: 6px; /* Reduced padding for smaller size */
-    border: 1px solid #ccc; /* Light gray border */
-    border-radius: 4px; /* Rounded corners */
-    font-size: 12px; /* Smaller font size for dropdown */
-    color: #333; /* Text color */
-    background-color: #f9f9f9; /* Light background color */
-    transition: border-color 0.3s, background-color 0.3s; /* Smooth transition for hover effects */
-    width: auto; /* Adjust width to content */
+    padding: 6px; 
+    border: 1px solid #ccc; 
+    border-radius: 4px; 
+    font-size: 12px;
+    color: #333; 
+    background-color: #f9f9f9;
+    transition: border-color 0.3s, background-color 0.3s;
+    width: auto; 
 }
 
-/* Select hover effect */
+
 .status-filter select:hover {
-    border-color: #007bff; /* Blue border on hover */
-    background-color: #fff; /* White background on hover */
+    border-color: #007bff; 
+    background-color: #fff; 
 }
 
-/* Select focus effect */
+
 .status-filter select:focus {
-    border-color: #007bff; /* Blue border on focus */
-    outline: none; /* Remove default outline */
-    background-color: #fff; /* White background on focus */
+    border-color: #007bff; 
+    outline: none; 
+    background-color: #fff; 
 }
-/* Modify header group styles to align items */
+
 .modify-header-group {
     display: flex;
-    align-items: center; /* Vertically center the items */
-    gap: 10px; /* Space between elements */
-    margin-bottom: 2px; /* Space below header */
+    align-items: center; 
+    gap: 10px;
+    margin-bottom: 2px; 
 }
 
-/* Search bar styles */
+
 .modifysearch-bar {
-    flex-grow: 1; /* Allow search bar to grow */
+    flex-grow: 1; 
 }
 
-/* Search input styles */
+
 .search-inputModify {
-    padding: 2px; /* Padding for input */
-    border: 1px solid #090909; /* Light gray border */
-    border-radius: 4px; /* Rounded corners */
-    font-size: 14px; /* Font size for input */
-    width: 900px; /* Set a width for the search bar */
+    padding: 2px; 
+    border: 1px solid #090909;
+    border-radius: 4px;
+    font-size: 14px; 
+    width: 900px;
     height: 20px;
-    transition: border-color 0.3s; /* Transition for focus effect */
+    transition: border-color 0.3s; 
 }
 
-/* Search input hover effect */
+
 .search-inputModify:hover {
-    border-color: #007bff; /* Change border color on hover */
+    border-color: #007bff; 
 }
 
-/* Search input focus effect */
+
 .search-inputModify:focus {
-    border-color: #007bff; /* Change border color on focus */
-    outline: none; /* Remove default outline */
+    border-color: #007bff; 
+    outline: none; 
 }
 
 
-/* Responsive styles */
+
 @media (max-width: 768px) {
     .modify-edit-form {
-        grid-template-columns: 1fr; /* One column for mobile */
+        grid-template-columns: 1fr; 
     }
 
     .modify-button-group-main {
-        flex-direction: column; /* Stack buttons on mobile */
+        flex-direction: column;
     }
 }
-/* Mobile styles */
+
 @media (max-width: 768px) {
     .modify-records-header {
-        flex-direction: column; /* Stack items vertically */
-        align-items: flex-start; /* Align items to the start */
+        flex-direction: column; 
+        align-items: flex-start; 
     }
 
     .modify-header-group {
-        flex-direction: column; /* Stack elements vertically */
-        width: 100%; /* Full width for mobile */
+        flex-direction: column; 
+        width: 100%; 
     }
 
     .modify-button-group {
-        width: 100%; /* Full width for button group */
-        margin-bottom: 10px; /* Space below button */
+        width: 100%; 
+        margin-bottom: 10px; 
     }
 
     .modify-btn {
-        width: 100%; /* Full width for button */
-        padding: 10px; /* Increased padding for touch targets */
+        width: 100%; 
+        padding: 10px; 
     }
 
     .modifysearch-bar {
-        width: 100%; /* Full width for search bar */
-        margin-bottom: 10px; /* Space below search bar */
+        width: 100%; 
+        margin-bottom: 10px; 
     }
 
     .search-inputModify {
-        width: 94%; /* Full width for input */
-        padding: 10px; /* Increased padding for better touch targets */
+        width: 94%; 
+        padding: 10px; 
     }
 
     .modify-btn-primary {
         width: 100%;
     }
     .status-filter {
-        width: 100%; /* Full width for dropdown */
+        width: 100%; 
     }
 
     .status-filter select {
-        width: 100%; /* Full width for select */
-        padding: 10px; /* Increased padding for better touch targets */
+        width: 100%; 
+        padding: 10px; 
     }
 
-    /* Adjust label spacing */
+    
     .status-filter label {
-        margin-bottom: 5px; /* Space below label */
+        margin-bottom: 5px; 
     }
 }

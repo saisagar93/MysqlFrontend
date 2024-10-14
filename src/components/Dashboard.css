@@ -1,19 +1,17 @@
-/* Global Styles */
 body {
     margin: 0;
     font-family: 'Roboto', sans-serif;
     background-color: #f0f2f5;
 }
 
-/* Dashboard Container */
 .dashboard-container {
     padding: 10px;
     max-width: 1340px;
     margin: auto;
-    position: relative; /* Added for absolute positioning of timer */
+    position: relative; 
 }
 
-/* Header */
+
 .dashboard-header {
     display: flex;
     justify-content: space-between;
@@ -50,13 +48,13 @@ button.dashboard-button.primary {
     background-color: #c82333;
 }
 
-/* Title */
+
 .dashboard-title {
     text-align: center;
     font-size: 1.4rem;
 }
 
-/* Timer */
+
 .timer {
     position: absolute;
     top: 118px;
@@ -70,7 +68,7 @@ button.dashboard-button.primary {
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
 
-/* Search Input */
+
 .search-container {
     text-align: center;
 }
@@ -83,7 +81,7 @@ button.dashboard-button.primary {
     font-size: 14px;
 }
 
-/* Card Container */
+
 .card-container {
     display: flex;
     justify-content: space-between;
@@ -116,14 +114,13 @@ button.dashboard-button.primary {
 }
 
 .due {
-    background-color: #ff7b00; /* Orange */
+    background-color: #ff7b00;
 }
 
 .stopped {
     background-color: #dc3545;
 }
 
-/* Tables */
 .tables-container {
     display: flex;
     flex-direction: column;
@@ -134,14 +131,14 @@ button.dashboard-button.primary {
     margin-top: 20px;
     overflow-x: auto;
     margin: 8px 0;
-    max-height: 155px; /* Set maximum height */
-    overflow-y: auto;  /* Enable vertical scrolling */
+    max-height: 155px; 
+    overflow-y: auto;  
     width: 49%;
 }
 
 .main-table.table-scroll {
-    max-height: 320px; /* Set maximum height */
-    overflow-y: auto;  /* Enable vertical scrolling */
+    max-height: 320px; 
+    overflow-y: auto;  
     border: 2px solid rgb(130,130,130);
     border-radius: 4px;
 }
@@ -155,10 +152,10 @@ table {
 }
 
 th, td {
-    padding: 2px 3px; /* Reduced padding to decrease row height */
+    padding: 2px 3px;
     text-align: left;
     border-bottom: 1px solid #040303;
-    font-size: 11px; /* Reduced font size */
+    font-size: 11px; 
     border: 1px solid rgb(184, 184, 184);
 }
 
@@ -166,12 +163,12 @@ th {
     background-color: #f1f1f1;
 }
 
-/* Total Row */
+
 .aggregate-tables tr:last-child td {
     font-weight: bold;
 }
 
-/* Aggregate Tables - 50% Width */
+
 .aggregate-tables {
     display: flex;
     justify-content: space-between;
@@ -179,25 +176,25 @@ th {
 }
 
 .aggregate1-th {
-    padding: 2px 4px; /* Reduced padding to decrease row height */
+    padding: 2px 4px;
     text-align: left;
     border-bottom: 1px solid #040303;
-    font-size: 12px; /* Reduced font size */
+    font-size: 12px;
     border: 1px solid rgb(228, 232, 197);
 }
 
 .aggregate-table {
 
-    flex: 1 1 48%; /* Each table takes roughly 50% of the width with small gap */
+    flex: 1 1 48%; 
     max-height: 200px;
-    margin-right: 6%; /* Small gap between tables */
-    overflow-x: auto; /* Table scroll for overflow */
+    margin-right: 6%; 
+    overflow-x: auto; 
     border-radius: 4px;
     margin-top: 2px;
 }
 
 .aggregate-table:last-child {
-    margin-right: 0; /* Remove right margin from last table */
+    margin-right: 0; 
 }
 
 #sub1 th {
@@ -218,52 +215,51 @@ th {
 
 .dashboard-header {
     display: flex;
-    justify-content: space-between; /* Distribute space between items */
-    align-items: center; /* Center items vertically */
-    padding: 2px; /* Add some padding */
+    justify-content: space-between; 
+    align-items: center; 
+    padding: 2px;
 }
 
 .logoleft {
-    width: 300px; /* Set width for logos */
-    height: 100PX; /* Maintain aspect ratio */
+    width: 300px; 
+    height: 100PX; 
 }
 .logoright {
-    width: 180px; /* Set width for logos */
-    height: 100PX; /* Maintain aspect ratio */
+    width: 180px; 
+    height: 100PX; 
     margin-right: 10px;
 }
 .dashboard-title {
     text-align: center;
-    margin: 2px 0; /* Adjust margin as needed */
+    margin: 2px 0; 
 }
 
 .button-container {
-    position: absolute; /* Position relative to the nearest positioned ancestor */
-    top: 10px; /* Distance from the top */
-    left: 10px; /* Distance from the left */
+    position: absolute; 
+    top: 10px; 
+    left: 10px; 
 }
 
 .navigate-button {
-    /* Optional styles for the button */
     padding: 8px 12px;
-    background-color: #007bff; /* Button background color */
-    color: white; /* Button text color */
-    border: none; /* No border */
-    border-radius: 4px; /* Rounded corners */
-    cursor: pointer; /* Pointer cursor on hover */
+    background-color: #007bff; 
+    color: white; 
+    border: none;
+    border-radius: 4px; 
+    cursor: pointer; 
     margin-left: 10px;
     margin-top: 6px;
 }
 
 
-/* Optional: Add styles for mobile responsiveness */
+
 @media (max-width: 768px) {
     .dashboard-header {
-        flex-direction: column; /* Stack items on smaller screens */
+        flex-direction: column; 
     }
 }
 
-/* Responsive Design */
+
 @media (max-width: 768px) {
     .card {
         flex: 1 1 calc(50% - 10px);
@@ -278,9 +274,9 @@ th {
     }
 
     .aggregate-table {
-        flex: 1 1 100%; /* Full width for aggregate tables on smaller screens */
-        margin-bottom: 10px; /* Add margin at the bottom for stacking */
-    }
+        flex: 1 1 100%; 
+        margin-bottom: 10px;
+    }    
     .dashboard-header {
         flex-direction: column;
         align-items: center;
@@ -289,15 +285,15 @@ th {
     .logoleft, .logoright {
 
         margin-top: 10px;
-        max-width: 180px; /* Smaller size for mobile */
+        max-width: 180px; 
     }
 
     .timer {
-        top: 115px; /* Adjust vertical position as needed */
-        right: 130px; /* Adjust horizontal position */
-        font-size: 12px; /* Smaller font size for mobile */
-        padding: 3px 8px; /* Adjust padding for smaller screens */
-        height: auto; /* Allow height to adjust based on content */
+        top: 115px; 
+        right: 130px; 
+        font-size: 12px; 
+        padding: 3px 8px; 
+        height: auto; 
        
     }
 }
@@ -312,10 +308,10 @@ th {
     }
 
     .card {
-        flex: 1 1 100%; /* Full width for mobile */
+        flex: 1 1 100%; 
     }
 
     th, td {
-        font-size: 8px; /* Smaller font size for mobile */
+        font-size: 8px;
     }
 }
