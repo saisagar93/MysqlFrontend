@@ -1,74 +1,43 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import moment from 'moment-timezone';
+import moment from 'moment';
 import { useNavigate } from 'react-router-dom';
+import { ReactGrid } from "@silevis/reactgrid";
+import "@silevis/reactgrid/styles.css";
 import './ModifyRecords.css';
 
 const ModifyRecords = () => {
     const navigate = useNavigate();
     const [filteredRecords, setFilteredRecords] = useState([]);
-    const [searchTerm, setSearchTerm] = useState(''); // State for the search term
-    const [formData, setFormData] = useState({
-        journey_Plane_No: '',
-        journey_Plane_Date: '',
-        jp_Status: '',
-        scheduled_Vehicle: '',
-        carrier: '',
-        next_Point: '',
-        next_Arrival_Date: '',
-        ivms_Point: '',
-        ivms_Check_Date: '',
-        offload_Point: '',
-        destination: '',
-        driver_Name: '',
-        accommodation: '',
-        jm: '',
-        sjm: '',
-        tracker: '',
-        remarks: '',
-    });
-    const [dropdownData, setDropdownData] = useState({
-        journeyPlaneNos: [],
-        scheduledVehicles: [],
-        carriers: [],
-        nextPoints: [],
-        ivmsPoints: [],
-        offloadPoints: [],
-        destinations: [],
-        driverNames: [],
-        sjms: [],
-        trackers: [],
-    });
-    const [message, setMessage] = useState('');
-    const [isEditing, setIsEditing] = useState(false);
-    const [isLoading, setIsLoading] = useState(true);
+    const [originalRecords, setOriginalRecords] = useState([]);
     const [selectedStatus, setSelectedStatus] = useState('IN TRANSIT');
-    const [selectedTracker, setSelectedTracker] = useState(''); // for tracker dropdown 
-
+    const [isLoading, setIsLoading] = useState(true);
+    const [message, setMessage] = useState('');
+    const [pendingChanges, setPendingChanges] = useState([]);
+    const [page, setPage] = useState(1);
+    const [pageSize] = useState(100);
+    const [selectedFilterColumn, setSelectedFilterColumn] = useState('JOURNEY_PLANE_NO');
+    const [filterValue, setFilterValue] = useState('');
 
     useEffect(() => {
         fetchRecords();
-        fetchDropdownData();
-    }, [selectedStatus,  selectedTracker]);
+    }, [selectedStatus, page]);
 
+    useEffect(() => {
+        setFilterValue('');
+    }, [selectedFilterColumn]);
 
     const fetchRecords = async () => {
         try {
             setIsLoading(true);
             const token = localStorage.getItem("token");
             const response = await axios.get(`${process.env.REACT_APP_BASE_API_URL}/dashboard`, {
-                headers: { Authorization: `Bearer ${token}` }
+                headers: { Authorization: `Bearer ${token}` },
+                params: { page, pageSize },
             });
-            
-            const normalizedStatus = selectedStatus.toLowerCase();
-            const normalizedTracker = selectedTracker.toLowerCase();
-            
-            const filtered = response.data.filter(item => 
-                item.JP_STATUS.toLowerCase() === normalizedStatus && 
-                (selectedTracker === '' || item.TRACKER.toLowerCase() === normalizedTracker)
-            );
-    
-            setFilteredRecords(filtered);
+
+            setOriginalRecords(response.data);
+            applyFilters(response.data);
         } catch (error) {
             console.error('Error fetching records:', error);
             setMessage('Error fetching records. Please try again.');
@@ -76,538 +45,252 @@ const ModifyRecords = () => {
             setIsLoading(false);
         }
     };
-    
-    
-    const fetchDropdownData = async () => {
-        try {
-            const token = localStorage.getItem("token");
-            const response = await axios.get(`${process.env.REACT_APP_BASE_API_URL}/dashboarddropdown`, {
-                headers: { Authorization: `Bearer ${token}` }
-            });
-    
-            // console.log('dropdown data', response.data);   
-    
-            const results = response.data; // Store the fetched data
-    
-            // Set the dropdown data based on the results
-            setDropdownData({
-                trackers: [...new Set(results.map((item) => item.tracker))],
-                sjms: [...new Set(results.map((item) => item.sjm))],
-                journeyPlaneNos: [...new Set(results.map((item) => item.journey_Plane_No))],
-                scheduledVehicles: [...new Set(results.map((item) => item.scheduled_Vehicle))],
-                carriers: [...new Set(results.map((item) => item.carrier))],
-                nextPoints: [...new Set(results.map((item) => item.next_Point))],
-                ivmsPoints: [...new Set(results.map((item) => item.ivms_Point))],
-                destinations: [...new Set(results.map((item) => item.destination))],
-                offloadPoints: [...new Set(results.map((item) => item.offload_Point))],
-                driverNames: [...new Set(results.map((item) => item.driver_Name))],
-            });
-            
-        } catch (error) {
-            console.error('Error fetching dropdown data:', error);
-        }
-    };
 
-    const handleSearchChange = (e) => {
-        setSearchTerm(e.target.value);
-    };
-
-
-    const filteredSearchRecords = filteredRecords.filter(record => {
-        const journeyPlaneNo = record.JOURNEY_PLANE_NO || '';
-        const driverName = record.DRIVER_NAME || '';
-        const sjm = record.SJM || '';
-        const carrier = record.CARRIER || '';
-        const scheduledVehicle = record.SCHEDULED_VEHICLE || '';
-        const tracker = record.TRACKER || '';
-    
-        return (
-            journeyPlaneNo.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            driverName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            sjm.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            carrier.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            scheduledVehicle.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            tracker.toLowerCase().includes(searchTerm.toLowerCase())
+    const applyFilters = (records) => {
+        const statusFiltered = records.filter(record => 
+            record.JP_STATUS.toLowerCase() === selectedStatus.toLowerCase()
         );
-    });
 
+        const finalFiltered = statusFiltered.filter(record => {
+            const valueToCompare = record[selectedFilterColumn] || '';
+            return valueToCompare.toString().toLowerCase().includes(filterValue.toLowerCase());
+        });
+
+        setFilteredRecords(finalFiltered);
+    };
     
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormData(prevData => ({
-            ...prevData,
-            [name]: value.toUpperCase(),
-        }));
-    };
-
-    const handleStatusChange = (e) => {
-        setSelectedStatus(e.target.value);
-    };
-
-    const handleUpdate = async (e) => {
-        e.preventDefault();
-        try {
-            if (!formData.journey_Plane_No) {
-                setMessage('Journey Plane No is required for updating.');
+    const handleChanges = (changes) => {
+        const updatedRecords = [...filteredRecords];
+    
+        changes.forEach((change) => {
+            const rowId = parseInt(change.rowId);
+            const columnId = change.columnId.toUpperCase();
+            const newCell = change.newCell;
+    
+            // Skip if the column is JOURNEY_PLANE_NO
+            if (columnId === 'JOURNEY_PLANE_NO') return;
+    
+            if (!newCell || typeof newCell.text === 'undefined') {
+                console.warn(`newCell or newCell.text is undefined for rowId: ${rowId}`);
                 return;
             }
-            
-            // Convert dates to UTC before sending
-        const dataToUpdate = {
-            ...formData,
-            journey_Plane_Date: moment(formData.journey_Plane_Date).utc().format(),
-            next_Arrival_Date: moment(formData.next_Arrival_Date).utc().format(),
-            ivms_Check_Date: moment(formData.ivms_Check_Date).utc().format(),
-        };
-
-            const token = localStorage.getItem("token");
-            await axios.put(`${process.env.REACT_APP_BASE_API_URL}/modifyRecord/${formData.journey_Plane_No}`, dataToUpdate, {
-                headers: { Authorization: `Bearer ${token}` }
-            });
-            setMessage('Record updated successfully!');
-            await fetchRecords();
-            setIsEditing(false);
-
-            setTimeout(() => {
-                setMessage('');
-            }, 3000);
-        } catch (error) {
-            console.error('Error updating record:', error);
-            setMessage('Error updating record. Please try again.');
-        }
-    };
-
-    const handleDelete = async () => {
-        // Ask for confirmation
-        const confirmed = window.confirm("Are you sure you want to delete this record?");
     
-        if (!confirmed) {
-        return; 
-        }
-        
+            let updatedRecord = {
+                ...updatedRecords[rowId],
+                [columnId]: newCell.text,
+            };
+    
+            // Convert dates to UTC if they have changed
+            if (['JOURNEY_PLANE_DATE', 'NEXT_ARRIVAL_DATE', 'IVMS_CHECK_DATE'].includes(columnId)) {
+                const dateValue = newCell.text;
+                if (dateValue) {
+                    updatedRecord[columnId] = moment(dateValue, 'DD/MM/YYYY HH:mm').utc().format();
+                }
+            }
+    
+            updatedRecords[rowId] = updatedRecord;
+    
+            const originalIndex = originalRecords.findIndex(record => record.JOURNEY_PLANE_NO === updatedRecords[rowId].JOURNEY_PLANE_NO);
+            if (originalIndex !== -1) {
+                originalRecords[originalIndex] = {
+                    ...originalRecords[originalIndex],
+                    [columnId]: updatedRecord[columnId],
+                };
+            }
+        });
+    
+        setFilteredRecords(updatedRecords);
+        setPendingChanges([...pendingChanges, ...changes]);
+    };
+    
+    const handleBatchUpdate = async (e) => {
+        e.preventDefault();
         try {
+            if (!filteredRecords.length) {
+                setMessage('No records to update.');
+                return;
+            }
+    
+            const dataToUpdate = pendingChanges.map((change) => {
+                const originalRecord = originalRecords.find(record => record.JOURNEY_PLANE_NO === filteredRecords[change.rowId].JOURNEY_PLANE_NO);
+                const updatedRecord = {
+                    ...originalRecord,
+                    [change.columnId]: change.newCell.text,
+                    id: originalRecord.id,
+                };
+    
+                // Convert dates to UTC before sending
+                if (['JOURNEY_PLANE_DATE', 'NEXT_ARRIVAL_DATE', 'IVMS_CHECK_DATE'].includes(change.columnId)) {
+                    const dateValue = change.newCell.text;
+                    if (dateValue) {
+                        updatedRecord[change.columnId] = moment(dateValue, 'DD/MM/YYYY HH:mm').utc().format();
+                    }
+                }
+    
+                return updatedRecord;
+            });
+    
             const token = localStorage.getItem("token");
-            await axios.delete(`${process.env.REACT_APP_BASE_API_URL}/deleteRecord/${formData.journey_Plane_No}`, {
+            await axios.patch(`${process.env.REACT_APP_BASE_API_URL}/modifyRecordsBatch`, dataToUpdate, {
                 headers: { Authorization: `Bearer ${token}` }
             });
-            setMessage('Record deleted successfully!');
-            await fetchRecords(); // Ensure the latest data is fetched
-            setIsEditing(false);
-
+    
+            setMessage('Data update successful!');
+            setPendingChanges([]);
+    
             setTimeout(() => {
                 setMessage('');
             }, 3000);
+    
+            await fetchRecords();
         } catch (error) {
-            console.error('Error deleting record:', error);
-            setMessage('Error deleting record. Please try again.');
+            console.error('Error during batch update:', error);
+            setMessage(error.response?.data?.message || 'Error during batch update. Please try again.');
         }
     };
-
-    const handleSelect = (record) => {
-        setFormData({
-            journey_Plane_No: record.JOURNEY_PLANE_NO || '',
-            journey_Plane_Date: formatDateForInput(record.JOURNEY_PLANE_DATE),
-            jp_Status: record.JP_STATUS || '',
-            scheduled_Vehicle: record.SCHEDULED_VEHICLE || '',
-            carrier: record.CARRIER || '',
-            next_Point: record.NEXT_POINT || '',
-            next_Arrival_Date: formatDateForInput(record.NEXT_ARRIVAL_DATE),
-            ivms_Point: record.IVMS_POINT || '',
-            ivms_Check_Date: formatDateForInput(record.IVMS_CHECK_DATE),
-            offload_Point: record.OFFLOAD_POINT || '',
-            destination: record.DESTINATION || '',
-            driver_Name: record.DRIVER_NAME || '',
-            accommodation: record.ACCOMMODATION || '',
-            jm: record.JM || '',
-            sjm: record.SJM || '',
-            tracker: record.TRACKER || '',
-            remarks: record.REMARKS || '',
-        });
-        setIsEditing(true);
-    };
-
-    const formatDateForInput = (dateString) => {
-        if (!dateString) return '';
-        return moment(dateString).format('YYYY-MM-DDTHH:mm');
-    };
+    
 
     const formatDateTime = (dateString) => {
         if (!dateString) return '';
-        return moment(dateString).format('YYYY-MM-DD HH:mm');
+        const date = new Date(dateString);
+        return moment(date).format('DD/MM/YYYY HH:mm');
     };
 
+    const getRows = (records) => {
+        const headerRow = {
+            rowId: "header",
+            cells: [
+                { type: "header", text: "Journey Plan No" },
+                { type: "header", text: "Tracker" },
+                { type: "header", text: "SJM" },
+                { type: "header", text: "Journey Plan Date"},
+                { type: "header", text: "Driver Name" },
+                { type: "header", text: "Scheduled Vehicle" },
+                { type: "header", text: "Carrier" },
+                { type: "header", text: "Remarks" },
+                { type: "header", text: "JP STATUS" },
+                { type: "header", text: "Next Arrival Time" },
+                { type: "header", text: "Next Point" },
+                { type: "header", text: "IVMS Check Date" },
+                { type: "header", text: "IVMS Point" },
+                { type: "header", text: "Destination" },
+                { type: "header", text: "Offload Point" },
+                { type: "header", text: "Accommodation" }     
+            ]
+        };
+
+        return [
+            headerRow,
+            ...records.map((record, idx) => ({
+                rowId: idx.toString(),
+                cells: [
+                    { type: "text", text: record.JOURNEY_PLANE_NO || '' },
+                    { type: "text", text: record.TRACKER || '' },
+                    { type: "text", text: record.SJM || '' },
+                    { type: "text", text: formatDateTime(record.JOURNEY_PLANE_DATE) || '' },
+                    { type: "text", text: record.DRIVER_NAME || '' },
+                    { type: "text", text: record.SCHEDULED_VEHICLE || '' },
+                    { type: "text", text: record.CARRIER || '' },
+                    { type: "text", text: record.REMARKS || '' },
+                    { type: "text", text: record.JP_STATUS || '' },
+                    { type: "text", text: formatDateTime(record.NEXT_ARRIVAL_DATE) || '' },
+                    { type: "text", text: record.NEXT_POINT || '' },
+                    { type: "text", text: formatDateTime(record.IVMS_CHECK_DATE) || '' },
+                    { type: "text", text: record.IVMS_POINT || '' },
+                    { type: "text", text: record.DESTINATION || '' },
+                    { type: "text", text: record.OFFLOAD_POINT || '' },
+                    { type: "text", text: record.ACCOMMODATION || '' },
+                ]
+            }))
+        ];
+    };
+
+    const columns = () => [
+        { columnId: 'JOURNEY_PLANE_NO', title: 'Journey Plan No', width: 130, resizable: true, editable: false, headerCellClass: 'bold-header'  },
+        { columnId: 'TRACKER', title: 'Tracker', width: 120, resizable: true },
+        { columnId: 'SJM', title: 'Journey Manager', width: 170, resizable: true },
+        { columnId: 'JOURNEY_PLANE_DATE', title: 'Journey Plan Date', width: 150, resizable: false },
+        { columnId: 'DRIVER_NAME', title: 'Driver Name', width: 150, resizable: true },
+        { columnId: 'SCHEDULED_VEHICLE', title: 'Scheduled Vehicle', width: 140, resizable: true },
+        { columnId: 'CARRIER', title: 'Carrier', width: 100, resizable: true },
+        { columnId: 'REMARKS', title: 'Remarks', width: 100, resizable: true },
+        { columnId: 'JP_STATUS', title: 'JP STATUS', width: 100, resizable: true },
+        { columnId: 'NEXT_ARRIVAL_DATE', title: 'Next Arrival Time', width: 150, resizable: true },
+        { columnId: 'NEXT_POINT', title: 'Next Point', width: 90, resizable: true },
+        { columnId: 'IVMS_CHECK_DATE', title: 'Last Check Time', width: 150, resizable: true },
+        { columnId: 'IVMS_POINT', title: 'Last IVMS Point', width: 150, resizable: true },
+        { columnId: 'DESTINATION', title: 'Destination', width: 110, resizable: true },
+        { columnId: 'OFFLOAD_POINT', title: 'Offload Point', width: 150, resizable: true },
+        { columnId: 'ACCOMMODATION', title: 'Accommodation', width: 150, resizable: true },   
+    ];
+
+    const rows = getRows(filteredRecords);
+
     return (
-    <div className="modify-records-wrapper"> 
-            <header className="modify-records-header">
-                <div className="modify-header-group">
-                    <div className="modify-button-group">
-                        <button className="modify-btn modify-btn-primary" onClick={() => navigate('/main')}>
-                            Main Page
-                        </button>
-                    </div>
-                    {!isEditing && (
-                    <div className="modifysearch-bar"> 
-                        <input
-                        type="text"
-                        placeholder="Search..."
-                        value={searchTerm}
-                        onChange={handleSearchChange}
-                        className="search-inputModify"
-                         />
-                    </div>
-                    )}
-                    {!isEditing && (
-                        <div className="status-filter">
-                        <label htmlFor="statusSelect">Filter By Status:</label>
-                        <select id="statusSelect" value={selectedStatus} onChange={handleStatusChange}>
-                            <option value="IN TRANSIT">IN TRANSIT</option>
-                            <option value="CLOSED">CLOSED</option>
-                        </select>
-                        </div>
-                    )}
-                    {!isEditing && (
-                    <div className="status-filter">
-                    <label htmlFor="trackerSelect">Filter By Tracker:</label>
-                    <select id="trackerSelect" value={selectedTracker} onChange={(e) => setSelectedTracker(e.target.value)}>
-                        <option value="">All Trackers</option>
-                        {dropdownData.trackers.map((tracker, index) => (
-                            <option key={index} value={tracker}>{tracker}</option>
-                        ))}
+        <>
+            <header className="modify-records-header1">
+                <div className="filter-section">
+                    <label htmlFor="filterColumnSelect">Filter By:</label>
+                    <select
+                        id="filterColumnSelect"
+                        value={selectedFilterColumn}
+                        onChange={(e) => setSelectedFilterColumn(e.target.value)}
+                    >
+                        <option value="JOURNEY_PLANE_NO">Journey Plan No</option>
+                        <option value="TRACKER">Tracker</option>
+                        <option value="SJM">Journey Manager</option>
+                        <option value="DRIVER_NAME">Driver Name</option>
+                        <option value="SCHEDULED_VEHICLE">Scheduled Vehicle</option>
+                        <option value="CARRIER">Carrier</option>
+                        <option value="REMARKS">Remarks</option>
+                        <option value="NEXT_POINT">Next Point</option>
+                        <option value="IVMS_POINT">IVMS Point</option>
+                        <option value="DESTINATION">Destination</option>
+                        <option value="OFFLOAD_POINT">Offload Point</option>
+                        <option value="ACCOMMODATION">Accommodation</option>        
                     </select>
-                    </div>
-                    )}
+                    <input
+                        type="text"
+                        placeholder={`${selectedFilterColumn}`}
+                        value={filterValue}
+                        onChange={(e) => {
+                            setFilterValue(e.target.value);
+                            applyFilters(originalRecords);
+                        }}
+                        className="filter-input"
+                    />
+                </div>
+
+                <div className="status-filter1">
+                    <label htmlFor="statusSelect">Filter By Status:</label>
+                    <select id="statusSelect" value={selectedStatus} onChange={(e) => {
+                        setSelectedStatus(e.target.value);
+                        applyFilters(originalRecords);
+                    }}>
+                        <option value="IN TRANSIT">IN TRANSIT</option>
+                        <option value="CLOSED">CLOSED</option>
+                    </select>
+                </div>
+
+                <div className="modify-records-footer">
+                    <button onClick={handleBatchUpdate}>Save Changes</button>
                 </div>
             </header>
-            
             {isLoading ? (
                 <p>Loading records...</p>
-            ) : isEditing ? (
-                <form onSubmit={handleUpdate} className="form-grid mannual_form_grid">
-                    {/* Form Fields */}
-                    <div className="block-display">
-                        <label className="form-label-addrecord">
-                            Journey Plan No <span className="required">*</span>
-                        </label>
-                        <input
-                            type="text"
-                            className="form-input-addrecord"
-                            name="journey_Plane_No"
-                            value={formData.journey_Plane_No}
-                            list="journey-list"
-                            required
-                            readOnly
-                        />
-                    </div>
-
-                    <div>
-                        <label className="form-label-addrecord">
-                            Journey Plan Date & Time <span className="required">*</span>
-                        </label>
-                        <input
-                            type="datetime-local"
-                            className="form-input-addrecord"
-                            name="journey_Plane_Date"
-                            value={formData.journey_Plane_Date}
-                            onChange={handleChange}
-                            required
-                        />
-                    </div>
-
-                    <div>
-                        <label className="form-label-addrecord">Journey Plan Status</label>
-                        <select
-                            className="form-input-addrecord form-select-addrecord"
-                            name="jp_Status"
-                            value={formData.jp_Status}
-                            onChange={handleChange}
-                        >
-                            <option value="">Select Status</option>
-                            <option value="IN TRANSIT">IN TRANSIT</option>
-                            <option value="CLOSED">CLOSED</option>
-                        </select>
-                    </div>
-
-                    <div>
-                        <label className="form-label-addrecord">
-                            Scheduled Vehicle <span className="required">*</span>
-                        </label>
-                        <input
-                            type="text"
-                            className="form-input-addrecord"
-                            name="scheduled_Vehicle"
-                            value={formData.scheduled_Vehicle}
-                            onChange={handleChange}
-                            list="vehicle-list"
-                            required
-                        />
-                        <datalist id="vehicle-list">
-                            {dropdownData.scheduledVehicles.map((vehicle, index) => (
-                                <option key={index} value={vehicle} />
-                            ))}
-                        </datalist>
-                    </div>
-
-                    <div>
-                        <label className="form-label-addrecord">
-                            Carrier <span className="required">*</span>
-                        </label>
-                        <input
-                            type="text"
-                            className="form-input-addrecord"
-                            name="carrier"
-                            value={formData.carrier}
-                            onChange={handleChange}
-                            list="carrier-list"
-                            required
-                        />
-                        <datalist id="carrier-list">
-                            {dropdownData.carriers.map((carrier, index) => (
-                                <option key={index} value={carrier} />
-                            ))}
-                        </datalist>
-                    </div>
-
-                    <div>
-                        <label className="form-label-addrecord">Next Point</label>
-                        <input
-                            type="text"
-                            className="form-input-addrecord"
-                            name="next_Point"
-                            value={formData.next_Point}
-                            onChange={handleChange}
-                            list="next-point-list"
-                        />
-                        <datalist id="next-point-list">
-                            {dropdownData.nextPoints.map((point, index) => (
-                                <option key={index} value={point} />
-                            ))}
-                        </datalist>
-                    </div>
-
-                    <div>
-                        <label className="form-label-addrecord">Next Arrival Date & Time</label>
-                        <input
-                            type="datetime-local"
-                            className="form-input-addrecord"
-                            name="next_Arrival_Date"
-                            value={formData.next_Arrival_Date}
-                            onChange={handleChange}
-                            required
-                        />
-                    </div>
-
-                    <div>
-                        <label className="form-label-addrecord">IVMS Point</label>
-                        <input
-                            type="text"
-                            className="form-input-addrecord"
-                            name="ivms_Point"
-                            value={formData.ivms_Point}
-                            onChange={handleChange}
-                            list="ivms-point-list"
-                        />
-                        <datalist id="ivms-point-list">
-                            {dropdownData.ivmsPoints.map((point, index) => (
-                                <option key={index} value={point} />
-                            ))}
-                        </datalist>
-                    </div>
-
-                    <div>
-                        <label className="form-label-addrecord">IVMS Check Date & Time</label>
-                        <input
-                            type="datetime-local"
-                            className="form-input-addrecord"
-                            name="ivms_Check_Date"
-                            value={formData.ivms_Check_Date}
-                            onChange={handleChange}
-                            required
-                        />
-                    </div>
-
-                    <div>
-                        <label className="form-label-addrecord">Offload Point</label>
-                        <input
-                            type="text"
-                            className="form-input-addrecord"
-                            name="offload_Point"
-                            value={formData.offload_Point}
-                            onChange={handleChange}
-                            list="offload-point-list"
-                        />
-                        <datalist id="offload-point-list">
-                            {dropdownData.offloadPoints.map((point, index) => (
-                                <option key={index} value={point} />
-                            ))}
-                        </datalist>
-                    </div>
-
-                    <div>
-                        <label className="form-label-addrecord">Destination</label>
-                        <input
-                            type="text"
-                            className="form-input-addrecord"
-                            name="destination"
-                            value={formData.destination}
-                            onChange={handleChange}
-                            list="destination-list"
-                        />
-                        <datalist id="destination-list">
-                            {dropdownData.destinations.map((dest, index) => (
-                                <option key={index} value={dest} />
-                            ))}
-                        </datalist>
-                    </div>
-
-                    <div>
-                        <label className="form-label-addrecord">Driver Name</label>
-                        <input
-                            type="text"
-                            className="form-input-addrecord"
-                            name="driver_Name"
-                            value={formData.driver_Name}
-                            onChange={handleChange}
-                            list="driver-name-list"
-                        />
-                        <datalist id="driver-name-list">
-                            {dropdownData.driverNames.map((driver, index) => (
-                                <option key={index} value={driver} />
-                            ))}
-                        </datalist>
-                    </div>
-
-                    <div>
-                        <label className="form-label-addrecord">Accommodation</label>
-                        <input
-                            type="text"
-                            className="form-input-addrecord"
-                            name="accommodation"
-                            value={formData.accommodation}
-                            onChange={handleChange}
-                        />
-                    </div>
-
-                    <div>
-                        <label className="form-label-addrecord">Journey Manager</label>
-                        <input
-                            type="text"
-                            className="form-input-addrecord"
-                            name="jm"
-                            value={formData.jm}
-                            onChange={handleChange}
-                        />
-                    </div>
-
-                    <div>
-                        <label className="form-label-addrecord">
-                            Sr. Journey Manager <span className="required">*</span>
-                        </label>
-                        <input
-                            type="text"
-                            className="form-input-addrecord"
-                            name="sjm"
-                            value={formData.sjm}
-                            onChange={handleChange}
-                            list="sjm-list"
-                            required
-                        />
-                        <datalist id="sjm-list">
-                            {dropdownData.sjms.map((sjm, index) => (
-                                <option key={index} value={sjm} />
-                            ))}
-                        </datalist>
-                    </div>
-
-                    <div className="block-display">
-                        <label className="form-label-addrecord">Tracker</label>
-                        <input
-                            type="text"
-                            className="form-input-addrecord"
-                            name="tracker"
-                            value={formData.tracker}
-                            onChange={handleChange}
-                            list="tracker-list"
-                        />
-                        <datalist id="tracker-list">
-                            {dropdownData.trackers.map((tracker, index) => (
-                                <option key={index} value={tracker} />
-                            ))}
-                        </datalist>
-                    </div>
-                    <div className="block-display">
-                        <label className="form-label-addrecord">Remarks</label>
-                        <input type="text"
-                        className="form-input-addrecord"
-                        name="remarks"
-                        value={formData.remarks}
-                        onChange={handleChange}
-                        list="remarks-list" // Link to the datalist
-                        />
-                        <datalist id="remarks-list">
-                            <option value="Live" />
-                            <option value="Last Point" />
-                            <option value="Ready to Close" />
-                            <option value="GOING TO" />
-                            <option value="BACK FROM" />
-                            <option value="Breakdown" />
-                            <option value="IN RIG" />
-                            <option value="Done" />
-                        </datalist>
-                    </div>
-                    <div className="modify-button-group-main">        
-                        <button type="submit" className="modify-btn modify-btn-primary">Update Record</button>                     
-                        <button type="button" className="modify-btn modify-btn-danger" onClick={handleDelete}>Delete Record</button>                    
-                        <button type="button" className="modify-btn modify-btn-secondary" onClick={() => setIsEditing(false)}>Cancel</button>
-                    </div>
-                </form>
             ) : (
-                <div className="modify-record-table-container">
-                    <table className="modify-record-table">
-                        <thead>
-                            <tr>
-                                <th>Journey Plan No</th>
-                                <th>Journey Manager</th>
-                                <th>Tracker</th>
-                                <th>Truck</th>
-                                <th>Driver Name</th>
-                                <th>Last IVMS POINT</th>
-                                <th>Last Check Time</th>
-                                <th>Next Point</th>
-                                <th>Next Arrival Time</th>
-                                <th>Offload Point</th>
-                                <th>Edit</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {filteredSearchRecords.map((record) => (
-                                <tr key={record.JOURNEY_PLANE_NO}>
-                                    <td>{record.JOURNEY_PLANE_NO}</td>
-                                    <td>{record.SJM}</td>
-                                    <td>{record.TRACKER}</td>
-                                    <td>{record.SCHEDULED_VEHICLE}</td>
-                                    <td>{record.DRIVER_NAME}</td>
-                                    <td>{record.IVMS_POINT}</td>
-                                    <td>{formatDateTime(record.IVMS_CHECK_DATE)}</td>
-                                    <td>{record.NEXT_POINT}</td>
-                                    <td>{formatDateTime(record.NEXT_ARRIVAL_DATE)}</td>
-                                    <td>{record.OFFLOAD_POINT}</td>
-                                    <td>
-                                    <button onClick={() => handleSelect(record)} className="modify-btn modify-btn-edit">
-                                        Edit
-                                    </button>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                    {filteredSearchRecords.length === 0 && <p>No records found for the selected status.</p>}
+                <div className="grid-container">
+                    <ReactGrid
+                        columns={columns()}
+                        rows={rows}
+                        onCellsChanged={handleChanges}
+                        enableClipboard={true}
+                    />
                 </div>
             )}
             {message && <div className="modify-message">{message}</div>}
-        </div>
+        </>
     );
 };
 
 export default ModifyRecords;
-
-

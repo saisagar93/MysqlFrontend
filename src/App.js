@@ -7,6 +7,7 @@ import MainPage from './components/MainPage';
 import AddRecord from './components/AddRecord';
 import Dashboard from './components/Dashboard';
 import ModifyRecords from './components/ModifyRecords';
+import DeleteRecord from './components/DeleteRecord';
 import Logout from './components/Logout';
 import useDeviceDetect from './hooks/useDeviceDetect';
 import './App.css';
@@ -55,6 +56,7 @@ const App = () => {
                     <Route path="/add-record" element={<ProtectedRoute element={<AddRecord />} />} />
                     <Route path="/dashboard" element={<ProtectedRoute element={<Dashboard />} />} />
                     <Route path="/modify-records" element={<ProtectedRoute element={<ModifyRecords />} />} />
+                    <Route path="/delete-records" element={<ProtectedRoute element={<DeleteRecord />} />} />
                     <Route path="/logout" element={<Logout setIsAuthenticated={setIsAuthenticated} />} />
                 </Routes>
             </div>

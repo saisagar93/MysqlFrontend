@@ -408,7 +408,7 @@ const AddRecord = () => {
             />
           </div>
 
-          <div>
+          {/* <div>
             <label className="form-label-addrecord">
               Journey Manager
             </label>
@@ -419,9 +419,9 @@ const AddRecord = () => {
               value={formData.jm}
               onChange={handleChange}
             />
-          </div>
+          </div> */}
 
-          <div>
+          <div className="block-display">
             <label className="form-label-addrecord">
               Sr. Journey Manager <span className="required">*</span>
             </label>
@@ -458,7 +458,7 @@ const AddRecord = () => {
             </datalist>
           </div>
 
-          <div className="block-display">
+          {/* <div className="block-display">
             <label className="form-label-addrecord">Remarks</label>
             <textarea
               className="form-input-addrecord"
@@ -466,7 +466,7 @@ const AddRecord = () => {
               value={formData.remarks}
               onChange={handleChange}
             />
-          </div>
+          </div> */}
 
           <button type="submit" className="submit-button-addrecord">
             Add Record

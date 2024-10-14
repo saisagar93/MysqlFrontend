@@ -20,6 +20,10 @@ const MainPage = () => {
         navigate('/modify-records'); // Navigate to Modify Records component
     };
 
+    const goToDeleteRecord = () => {
+        navigate('/delete-records'); // Navigate to Modify Records component
+    };
+
     // Function to handle logout
     const handleLogout = () => {
         localStorage.removeItem('token'); // Remove token from localStorage
@@ -42,6 +46,11 @@ const MainPage = () => {
                 <div className="col">
                     <button className="btn btn-infomain" onClick={goToModifyRecords}>
                         Modify Records
+                    </button>
+                </div>
+                <div className="col">
+                    <button className="btn btn-delete" onClick={goToDeleteRecord}>
+                        Delete Records
                     </button>
                 </div>
                 <div className="col">

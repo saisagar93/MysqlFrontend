@@ -1,176 +1,43 @@
-/* General wrapper styles */
-.modify-records-wrapper {
-    padding: 5px;
-}
-
-/* Header styles */
-.modify-records-header {
+/* Header Styles */
+.modify-records-header1 {
+    background-color: lightsteelblue;
+    color: white;
+    padding: 8px;
     display: flex;
-    justify-content: space-between;
-    margin-bottom: 5px;
-}
-
-.modify-button-group {
-    display: flex;
-    gap: 10px; /* Space between buttons */
-}
-
-/* Button styles */
-.modify-btn {
-    padding: 4px 12px; /* Adjusted padding */
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 14px; /* Adjusted font size */
-    transition: background-color 0.3s; /* Smooth transition for hover effects */
-}
-
-.modify-btn-edit {
-    background-color: lightgreen;
-    color: black;
-}
-
-/* Primary Button (Update) */
-.modify-btn-primary {
-    background-color: #007bff; /* Blue */
-    color: white;
-    margin-right: 10px;
-}
-
-.modify-btn-primary:hover {
-    background-color: #0056b3; /* Darker blue on hover */
-}
-
-/* Danger Button (Delete) */
-.modify-btn-danger {
-    background-color: #dc3545; /* Red */
-    color: white;
-    margin-right: 10px;
-}
-
-.modify-btn-danger:hover {
-    background-color: #c82333; /* Darker red on hover */
-}
-
-.modify-btn-secondary {
-    background-color: grey; /* Grey */
-    color: white;
-    margin-right: 10px;
-}
-
-.modify-btn-secondary:hover {
-    background-color: darkgray; /* Darker grey on hover */
-}
-
-/* Info Button (Edit) */
-.modify-btn-info {
-    background-color: #17a2b8; /* Teal */
-    color: white;
-}
-
-.modify-btn-info:hover {
-    background-color: #138496; /* Darker teal on hover */
-}
-
-/* Form styles */
-.modify-edit-form {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr); /* Two columns for desktop */
-    gap: 5px; /* Reduced gap */
-}
-
-.modify-form-group {
-    display: flex;
-    flex-direction: column;
-}
-
-.modify-form-label {
-    font-weight: bold;
-    margin-bottom: 5px;
-    font-size: 14px; /* Increased font size for labels */
-    color: #333; /* Dark color for better contrast */
-}
-
-/* Input and select styles */
-.modify-form-control {
-    padding: 6px; /* Reduced padding */
-    border: 1px solid #0a0909; /* Light gray border */
-    border-radius: 4px;
-    box-sizing: border-box; /* Include padding in width */
-    font-size: 14px; /* Adjusted font size for inputs */
-}
-
-/* Table styles */
-.modify-record-table-container {
-    max-height: 640px; /* Height for scrolling */
-    overflow-y: auto; /* Enable scrolling */
-}
-
-.modify-record-table {
-    width: 100%;
-    border-collapse: collapse;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Shadow for depth */
-    border-radius: 5px; /* Rounded corners */
-    border: 2px solid rgb(6, 5, 5);
-    font-family: 'Roboto', sans-serif;
-    font-size: 12px; /* Adjust as needed */
-    line-height: 1.1; 
-}
-
-.modify-record-table th,
-.modify-record-table td {
-    border: 1px solid #ddd; /* Light border for cells */
-    text-align: left;
-    font-size: 12px; /* Smaller font size for table cells */
-    padding: 2px; /* Padding for header */
-    width: 60px; /* Fixed width for consistency */
-}
-
-.modify-record-table th {
-    background-color: lightgray; /* Light background for header */
-    color: #444444; /* Dark text for header */
-    font-weight: bold; /* Bold header text */
-    height: 30px; /* Slightly increased height for header */
-}
-
-.modify-record-table td {
-    height: auto; /* Set height to auto for dynamic sizing */
-    height: 2px; /* Minimum height for compactness */
-}
-
-.modify-record-table tr:nth-child(even) {
-    background-color: #f9f9f9; /* Light gray for even rows */
-}
-
-.modify-record-table tr:hover {
-    background-color: #e0e0e0; /* Light gray on hover */
-}
-
-/* Success and error message styles */
-.modify-message {
-    color: green; /* Default success color */
-    margin-top: 10px;
-    font-size: 14px; /* Adjusted font size for messages */
+    align-items: center; /* Align items in the center */
+    justify-content: space-between; /* Space out elements */
+    flex-wrap: wrap; /* Allow wrapping on smaller screens */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 /* Dropdown container */
-.status-filter {
-    margin: 2px 0; /* Space above and below */
-    display: flex; /* Flex for alignment */
-    align-items: center; /* Center align items */
-    flex-wrap: wrap; /* Allow wrapping for smaller screens */
+.filter-section {
+    display: flex;
+    align-items: center;
+    gap: 4px;
 }
 
+.status-filter1 {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-left: 12px; /* Remove margin to align it to the left */
+    margin-right: auto; /* Allow the element to take up remaining space on the left */
+}
 /* Label styles */
-.status-filter label {
-    margin-right: 4px; /* Space between label and dropdown */
+.filter-section label { 
     font-weight: bold; /* Bold text for the label */
     font-size: 14px; /* Smaller font size for label */
     color: #333; /* Dark color for contrast */
 }
-
+.status-filter1
+{ 
+    font-weight: bold; /* Bold text for the label */
+    font-size: 14px; /* Smaller font size for label */
+    color: #333; /* Dark color for contrast */
+}
 /* Select styles */
-.status-filter select {
+.filter-section select {
     padding: 6px; /* Reduced padding for smaller size */
     border: 1px solid #ccc; /* Light gray border */
     border-radius: 4px; /* Rounded corners */
@@ -181,110 +48,148 @@
     width: auto; /* Adjust width to content */
 }
 
+.status-filter1 select {
+    padding: 6px; /* Reduced padding for smaller size */
+    border: 1px solid #ccc; /* Light gray border */
+    border-radius: 4px; /* Rounded corners */
+    font-size: 12px; /* Smaller font size for dropdown */
+    color: #333; /* Text color */
+    background-color: #f9f9f9; /* Light background color */
+    transition: border-color 0.3s, background-color 0.3s; /* Smooth transition for hover effects */
+    width: auto; /* Adjust width to content */
+}
+
+.status-filter1 select:hover {
+    border-color: #007bff; /* Blue border on hover */
+    background-color: #fff; /* White background on hover */
+}
+
 /* Select hover effect */
-.status-filter select:hover {
+.filter-section select:hover {
     border-color: #007bff; /* Blue border on hover */
     background-color: #fff; /* White background on hover */
 }
 
 /* Select focus effect */
-.status-filter select:focus {
+.filter-section select:focus {
     border-color: #007bff; /* Blue border on focus */
     outline: none; /* Remove default outline */
     background-color: #fff; /* White background on focus */
 }
-/* Modify header group styles to align items */
-.modify-header-group {
+
+label {
+    font-weight: bold;
+}
+
+.filter-input {
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    transition: border-color 0.3s;
+} */
+
+select:focus, input:focus {
+    border-color: #007bff;
+    outline: none;
+}
+
+/* Footer Styles */
+.modify-records-footer {
     display: flex;
-    align-items: center; /* Vertically center the items */
-    gap: 10px; /* Space between elements */
-    margin-bottom: 2px; /* Space below header */
+    gap: 15px;
 }
 
-/* Search bar styles */
-.modifysearch-bar {
-    flex-grow: 1; /* Allow search bar to grow */
+button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
 }
 
-/* Search input styles */
-.search-inputModify {
-    padding: 2px; /* Padding for input */
-    border: 1px solid #090909; /* Light gray border */
-    border-radius: 4px; /* Rounded corners */
-    font-size: 14px; /* Font size for input */
-    width: 900px; /* Set a width for the search bar */
-    height: 20px;
-    transition: border-color 0.3s; /* Transition for focus effect */
+button:hover {
+    background-color: #0056b3;
+    transform: scale(1.05);
 }
 
-/* Search input hover effect */
-.search-inputModify:hover {
-    border-color: #007bff; /* Change border color on hover */
+button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
 }
 
-/* Search input focus effect */
-.search-inputModify:focus {
-    border-color: #007bff; /* Change border color on focus */
-    outline: none; /* Remove default outline */
+/* Message Styles */
+.modify-message {
+    padding: 2px;
+    border: 1px solid #b2cdb8;
+    background-color: #d4edda;
+    color: #030303;
+    border-radius: 5px;
+}
+
+/* Loading Styles */
+.loading {
+    text-align: center;
+    font-size: 1.2em;
+    margin-top: 50px;
+}
+.grid-item {
+    padding: 10px; /* Decrease from original padding */
+    font-size: 10px;
+    /* Other styles */
+}
+/* Grid Styles */
+.reactgrid {
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+.grid-container {
+    width: 100%; /* Full width of the parent */
+    height: 600px; /* Fixed height for vertical scrolling */
+    overflow-x: auto; /* Enable horizontal scrolling */
+    overflow-y: auto; /* Enable vertical scrolling */
+    border: 2px solid rgb(11, 8, 8); /* Optional: Visual separation */
+    font-size: 14px; /* Font size */
+    font-family: 'Roboto', sans-serif; /* Font family */
+}
+
+.bold-header {
+    font-weight: bold; /* Make the text bold */
+    text-align: left; /* Optional: Align text to the left */
+    background-color: #f0f0f0; /* Optional: Background color for better visibility */
+    padding: 8px; /* Optional: Add some padding */
 }
 
 
-/* Responsive styles */
-@media (max-width: 768px) {
-    .modify-edit-form {
-        grid-template-columns: 1fr; /* One column for mobile */
-    }
-
-    .modify-button-group-main {
-        flex-direction: column; /* Stack buttons on mobile */
-    }
-}
-/* Mobile styles */
+/* Responsive Styles */
 @media (max-width: 768px) {
     .modify-records-header {
-        flex-direction: column; /* Stack items vertically */
-        align-items: flex-start; /* Align items to the start */
+        flex-direction: column; /* Stack items on smaller screens */
+        align-items: flex-start; /* Align items to the left */
     }
 
-    .modify-header-group {
-        flex-direction: column; /* Stack elements vertically */
-        width: 100%; /* Full width for mobile */
+    .filter-section {
+        flex-wrap: wrap; /* Allow wrapping */
     }
 
-    .modify-button-group {
-        width: 100%; /* Full width for button group */
-        margin-bottom: 10px; /* Space below button */
+    select, input {
+        margin-bottom: 10px; /* Space below inputs on smaller screens */
+        min-width: 120px; /* Adjust minimum width */
     }
 
-    .modify-btn {
-        width: 100%; /* Full width for button */
-        padding: 10px; /* Increased padding for touch targets */
+    .modify-records-footer {
+        flex-direction: column; /* Stack buttons vertically */
+        align-items: stretch; /* Full width for buttons */
     }
 
-    .modifysearch-bar {
-        width: 100%; /* Full width for search bar */
-        margin-bottom: 10px; /* Space below search bar */
+    button {
+        min-width: 100%; /* Full width on smaller screens */
     }
+}
 
-    .search-inputModify {
-        width: 94%; /* Full width for input */
-        padding: 10px; /* Increased padding for better touch targets */
-    }
-
-    .modify-btn-primary {
-        width: 100%;
-    }
-    .status-filter {
-        width: 100%; /* Full width for dropdown */
-    }
-
-    .status-filter select {
-        width: 100%; /* Full width for select */
-        padding: 10px; /* Increased padding for better touch targets */
-    }
-
-    /* Adjust label spacing */
-    .status-filter label {
-        margin-bottom: 5px; /* Space below label */
+@media (max-width: 480px) {
+    label {
+        margin-bottom: 5px; /* Space between label and input */
     }
 }

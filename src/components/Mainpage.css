@@ -61,6 +61,15 @@
     background-color: #138496; /* Darker info on hover */
 }
 
+.btn-delete {
+    background-color: #b86a17; /* Info color */
+    color: #fff; /* White text */
+}
+
+.btn-delete:hover {
+    background-color: #b86a17; /* Darker info on hover */
+}
+
 .btn-dangermain {
     background-color: #dc3545; /* Red color */
     color: #fff; /* White text */

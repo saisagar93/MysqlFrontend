@@ -7,10 +7,16 @@ import './Dashboard.css';
 
 const SERVER_URL = `${process.env.REACT_APP_BASE_API_URL}/dashboard`;
 
+// Function to format date and time
 const formatDateTime = (dateString) => {
     if (!dateString) return 'N/A';
     const date = new Date(dateString);
     return moment(date).format('DD/MM/YYYY HH:mm:ss');
+};
+
+// Helper function to normalize strings
+const normalizeString = (str) => {
+    return str ? str.trim().toLowerCase() : '';
 };
 
 const Dashboard = () => {
@@ -45,15 +51,17 @@ const Dashboard = () => {
 
         data.forEach(item => {
             const minutesSinceLastCheck = calculateMinutesSinceLastCheck(item.IVMS_CHECK_DATE);
+            const normalizedJPStatus = normalizeString(item.JP_STATUS);
+            const normalizedRemarks = normalizeString(item.REMARKS);
 
-            if (!["closed", "CLOSED", "Closed"].includes(item.JP_STATUS)) counts.liveJourneys++;
-            if (minutesSinceLastCheck > 120 && !["Done", "DONE", "done"].includes(item.REMARKS) && !["closed", "CLOSED", "Closed"].includes(item.JP_STATUS)) {
+            if (!['closed'].includes(normalizedJPStatus)) counts.liveJourneys++;
+            if (minutesSinceLastCheck > 120 && !['done'].includes(normalizedRemarks) && !['closed'].includes(normalizedJPStatus)) {
                 counts.criticalCheck++;
             }
             const isValidHours = (minutesSinceLastCheck > 60 && minutesSinceLastCheck < 120) || isNaN(minutesSinceLastCheck);
-            const isValidStatus = !["closed", "CLOSED", "Closed"].includes(item.JP_STATUS) && !["Done", "DONE", "done"].includes(item.REMARKS);
+            const isValidStatus = !['closed'].includes(normalizedJPStatus) && !['done'].includes(normalizedRemarks);
             if (isValidHours && isValidStatus) counts.dueForChecking++;
-            if (["Done", "DONE", "done"].includes(item.REMARKS) && !["closed", "CLOSED", "Closed"].includes(item.JP_STATUS)) {
+            if (['done'].includes(normalizedRemarks) && !['closed'].includes(normalizedJPStatus)) {
                 counts.stoppedTrucks++;
             }
         });
@@ -68,7 +76,7 @@ const Dashboard = () => {
                 headers: { Authorization: `Bearer ${token}` }
             });
             setRecords(response.data);
-            const filtered = response.data.filter(item => !["closed", "CLOSED", "Closed"].includes(item.JP_STATUS));
+            const filtered = response.data.filter(item => !['closed'].includes(normalizeString(item.JP_STATUS)));
             setFilteredRecords(filtered);
             setError('');
             calculateCardCounts(filtered);
@@ -112,42 +120,43 @@ const Dashboard = () => {
     const handleCardClick = (type) => {
         const filtered = records.filter(item => {
             const minutesSinceLastCheck = calculateMinutesSinceLastCheck(item.IVMS_CHECK_DATE);
-            
+            const normalizedJPStatus = normalizeString(item.JP_STATUS);
+            const normalizedRemarks = normalizeString(item.REMARKS);
+
             const isValidHours = 
                 (minutesSinceLastCheck > 60 && minutesSinceLastCheck < 120) || 
                 isNaN(minutesSinceLastCheck);
             
             const isValidStatus = 
-                !["closed", "CLOSED", "Closed"].includes(item.JP_STATUS) && 
-                !["Done", "DONE", "done"].includes(item.REMARKS);
+                !['closed'].includes(normalizedJPStatus) && 
+                !['done'].includes(normalizedRemarks);
             
             switch (type) {
                 case 'live':
-                    return !["closed", "CLOSED", "Closed"].includes(item.JP_STATUS);
+                    return !['closed'].includes(normalizedJPStatus);
                 case 'critical':
                     return minutesSinceLastCheck > 120 && 
-                           !["Done", "DONE", "done"].includes(item.REMARKS) && 
-                           !["closed", "CLOSED", "Closed"].includes(item.JP_STATUS);
+                           !['done'].includes(normalizedRemarks) && 
+                           !['closed'].includes(normalizedJPStatus);
                 case 'due':
                     return isValidHours && isValidStatus;
                 case 'stopped':
-                    return ["Done", "DONE", "done"].includes(item.REMARKS) && 
-                           !["closed", "CLOSED", "Closed"].includes(item.JP_STATUS);
+                    return ['done'].includes(normalizedRemarks) && 
+                           !['closed'].includes(normalizedJPStatus);
                 default:
                     return true;
             }
         });
         setFilteredRecords(filtered);
     };
-    
 
-     const handleSearch = (event) => {
+    const handleSearch = (event) => {
         const value = event.target.value.toLowerCase();
         setSearchTerm(value);
         setFilteredRecords(records.filter(record =>
             Object.values(record).some(val =>
-                val !== null && val.toString().toLowerCase().includes(value)
-            ) && !["closed", "CLOSED", "Closed"].includes(record.JP_STATUS)
+                val !== null && normalizeString(val).includes(value)
+            ) && !['closed'].includes(normalizeString(record.JP_STATUS))
         ));
     };
 
@@ -162,7 +171,7 @@ const Dashboard = () => {
     const trackersCount = useMemo(() => {
         return records.reduce((acc, record) => {
             const tracker = record.TRACKER?.trim().toLowerCase(); 
-            if (!tracker || ["closed", "CLOSED", "Closed"].includes(record.JP_STATUS)) return acc;
+            if (!tracker || ['closed'].includes(normalizeString(record.JP_STATUS))) return acc;
     
             acc[tracker] = acc[tracker] || { liveJPS: 0, criticalCheck: 0, dueForChecking: 0 };
     
@@ -170,19 +179,19 @@ const Dashboard = () => {
             const minutesSinceLastCheck = calculateMinutesSinceLastCheck(record.IVMS_CHECK_DATE);
     
             // Increment live journeys if JP_STATUS is not closed
-            if (!["closed", "CLOSED", "Closed"].includes(record.JP_STATUS)) {
+            if (!['closed'].includes(normalizeString(record.JP_STATUS))) {
                 acc[tracker].liveJPS++;
             }
     
             // Check for critical condition
-            if (minutesSinceLastCheck > 120 && !["Done", "DONE", "done"].includes(record.REMARKS)) {
+            if (minutesSinceLastCheck > 120 && !['done'].includes(normalizeString(record.REMARKS))) {
                 acc[tracker].criticalCheck++;
             }
     
             // Check for due for checking condition
             if (
                 (minutesSinceLastCheck > 60 && minutesSinceLastCheck < 120) || 
-                (isNaN(minutesSinceLastCheck) && !["Done", "DONE", "done"].includes(record.REMARKS))
+                (isNaN(minutesSinceLastCheck) && !['done'].includes(normalizeString(record.REMARKS)))
             ) {
                 acc[tracker].dueForChecking++;
             }
@@ -191,15 +200,16 @@ const Dashboard = () => {
         }, {});
     }, [records, calculateMinutesSinceLastCheck]);
     
-
     return (
+        
         <div className={`dashboard-container ${isMobile ? 'mobile' : 'desktop'}`}>
             <header className="dashboard-header">
-                <button className="dashboard-button primary" onClick={() => navigate('/main')}>
-                    Main Page
-                </button>
+                <img src="almadinalogo1.png" alt="Left Logo" className="logoleft" />
+                <img src="pdo.png" alt="Right Logo" className="logoright" />     
             </header>
-
+            <button className="navigate-button" onClick={() => navigate('/main')}>
+                Main Page
+            </button>
             <h1 className="dashboard-title">JMCC Dashboard</h1>
             {error ? (
                 <p className="text-center text-danger">{error}</p>
@@ -239,21 +249,41 @@ const Dashboard = () => {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {filteredRecords.map((record, index) => (
-                                        <tr key={index}>
-                                            <td>{record.JOURNEY_PLANE_NO}</td>
-                                            <td>{record.SJM}</td>
-                                            <td>{record.TRACKER}</td>
-                                            <td>{record.SCHEDULED_VEHICLE}</td>
-                                            <td>{record.DRIVER_NAME}</td>
-                                            <td>{record.IVMS_POINT}</td>
-                                            <td>{formatDateTime(record.IVMS_CHECK_DATE)}</td>
-                                            <td>{calculateMinutesSinceLastCheck(record.IVMS_CHECK_DATE)}</td>
-                                            <td>{record.NEXT_POINT}</td>
-                                            <td>{formatDateTime(record.NEXT_ARRIVAL_DATE)}</td>
-                                            <td>{record.OFFLOAD_POINT}</td>
-                                        </tr>
-                                    ))}
+                                    {filteredRecords.map((record, index) => {
+                                        const minutesSinceLastCheck = calculateMinutesSinceLastCheck(record.IVMS_CHECK_DATE);
+                                        let minutesStyle = {};
+
+                                        const normalizedRemarks = normalizeString(record.REMARKS);
+                                        const normalizedJPStatus = normalizeString(record.JP_STATUS);
+
+                                        const isValidHours = (minutesSinceLastCheck > 60 && minutesSinceLastCheck < 120) || isNaN(minutesSinceLastCheck);
+                                        const isValidStatus = !['closed'].includes(normalizedJPStatus) && !['done'].includes(normalizedRemarks);
+
+                                        if (minutesSinceLastCheck > 120 && !['done'].includes(normalizedRemarks) && !['closed'].includes(normalizedJPStatus))
+                                        {
+                                            minutesStyle = { backgroundColor: '#efb5b5' }; 
+                                        } else if (['done'].includes(normalizedRemarks) && !['closed'].includes(normalizedJPStatus)) {
+                                            minutesStyle = { backgroundColor: '#DEEFFF' }; 
+                                        } else if (isValidHours && isValidStatus) {
+                                            minutesStyle = { backgroundColor: '#e6e6e6' };
+                                        }
+
+                                        return (
+                                            <tr key={index}>
+                                                <td>{record.JOURNEY_PLANE_NO}</td>
+                                                <td>{record.SJM}</td>
+                                                <td>{record.TRACKER}</td>
+                                                <td>{record.SCHEDULED_VEHICLE}</td>
+                                                <td>{record.DRIVER_NAME}</td>
+                                                <td>{record.IVMS_POINT}</td>
+                                                <td>{formatDateTime(record.IVMS_CHECK_DATE)}</td>
+                                                <td style={minutesStyle}>{minutesSinceLastCheck}</td>
+                                                <td>{record.NEXT_POINT}</td>
+                                                <td>{formatDateTime(record.NEXT_ARRIVAL_DATE)}</td>
+                                                <td>{record.OFFLOAD_POINT}</td>
+                                            </tr>
+                                        );
+                                    })}
                                 </tbody>
                             </table>
                         </div>
@@ -319,5 +349,4 @@ const Dashboard = () => {
 };
 
 export default Dashboard;
-
 
