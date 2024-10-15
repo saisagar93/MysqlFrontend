@@ -58,38 +58,36 @@ const ModifyRecords = () => {
 
         setFilteredRecords(finalFiltered);
     };
-    
+
     const handleChanges = (changes) => {
         const updatedRecords = [...filteredRecords];
-    
+
         changes.forEach((change) => {
             const rowId = parseInt(change.rowId);
             const columnId = change.columnId.toUpperCase();
             const newCell = change.newCell;
-    
-            // Skip if the column is JOURNEY_PLANE_NO
+
             if (columnId === 'JOURNEY_PLANE_NO') return;
-    
+
             if (!newCell || typeof newCell.text === 'undefined') {
                 console.warn(`newCell or newCell.text is undefined for rowId: ${rowId}`);
                 return;
             }
-    
+
             let updatedRecord = {
                 ...updatedRecords[rowId],
                 [columnId]: newCell.text,
             };
-    
-            // Convert dates to UTC if they have changed
+
             if (['JOURNEY_PLANE_DATE', 'NEXT_ARRIVAL_DATE', 'IVMS_CHECK_DATE'].includes(columnId)) {
                 const dateValue = newCell.text;
                 if (dateValue) {
                     updatedRecord[columnId] = moment(dateValue, 'DD/MM/YYYY HH:mm').utc().format();
                 }
             }
-    
+
             updatedRecords[rowId] = updatedRecord;
-    
+
             const originalIndex = originalRecords.findIndex(record => record.JOURNEY_PLANE_NO === updatedRecords[rowId].JOURNEY_PLANE_NO);
             if (originalIndex !== -1) {
                 originalRecords[originalIndex] = {
@@ -98,11 +96,11 @@ const ModifyRecords = () => {
                 };
             }
         });
-    
+
         setFilteredRecords(updatedRecords);
         setPendingChanges([...pendingChanges, ...changes]);
     };
-    
+
     const handleBatchUpdate = async (e) => {
         e.preventDefault();
         try {
@@ -110,7 +108,7 @@ const ModifyRecords = () => {
                 setMessage('No records to update.');
                 return;
             }
-    
+
             const dataToUpdate = pendingChanges.map((change) => {
                 const originalRecord = originalRecords.find(record => record.JOURNEY_PLANE_NO === filteredRecords[change.rowId].JOURNEY_PLANE_NO);
                 const updatedRecord = {
@@ -118,37 +116,43 @@ const ModifyRecords = () => {
                     [change.columnId]: change.newCell.text,
                     id: originalRecord.id,
                 };
-    
-                // Convert dates to UTC before sending
+
                 if (['JOURNEY_PLANE_DATE', 'NEXT_ARRIVAL_DATE', 'IVMS_CHECK_DATE'].includes(change.columnId)) {
                     const dateValue = change.newCell.text;
                     if (dateValue) {
                         updatedRecord[change.columnId] = moment(dateValue, 'DD/MM/YYYY HH:mm').utc().format();
                     }
                 }
-    
+
                 return updatedRecord;
             });
-    
+
             const token = localStorage.getItem("token");
             await axios.patch(`${process.env.REACT_APP_BASE_API_URL}/modifyRecordsBatch`, dataToUpdate, {
                 headers: { Authorization: `Bearer ${token}` }
             });
-    
+
             setMessage('Data update successful!');
             setPendingChanges([]);
-    
+
             setTimeout(() => {
                 setMessage('');
             }, 3000);
-    
+
             await fetchRecords();
         } catch (error) {
             console.error('Error during batch update:', error);
             setMessage(error.response?.data?.message || 'Error during batch update. Please try again.');
         }
     };
-    
+
+    const resetFilters = () => {
+        setFilterValue('');
+        setSelectedFilterColumn('JOURNEY_PLANE_NO');
+        setSelectedStatus('IN TRANSIT'); // Reset to "IN TRANSIT" status
+        setFilteredRecords(originalRecords);
+        applyFilters(originalRecords); // Reapply filters to show the correct records
+    };
 
     const formatDateTime = (dateString) => {
         if (!dateString) return '';
@@ -206,22 +210,22 @@ const ModifyRecords = () => {
     };
 
     const columns = () => [
-        { columnId: 'JOURNEY_PLANE_NO', title: 'Journey Plan No', width: 130, resizable: true, editable: false, headerCellClass: 'bold-header'  },
-        { columnId: 'TRACKER', title: 'Tracker', width: 120, resizable: true },
-        { columnId: 'SJM', title: 'Journey Manager', width: 170, resizable: true },
-        { columnId: 'JOURNEY_PLANE_DATE', title: 'Journey Plan Date', width: 150, resizable: false },
-        { columnId: 'DRIVER_NAME', title: 'Driver Name', width: 150, resizable: true },
-        { columnId: 'SCHEDULED_VEHICLE', title: 'Scheduled Vehicle', width: 140, resizable: true },
-        { columnId: 'CARRIER', title: 'Carrier', width: 100, resizable: true },
-        { columnId: 'REMARKS', title: 'Remarks', width: 100, resizable: true },
-        { columnId: 'JP_STATUS', title: 'JP STATUS', width: 100, resizable: true },
-        { columnId: 'NEXT_ARRIVAL_DATE', title: 'Next Arrival Time', width: 150, resizable: true },
-        { columnId: 'NEXT_POINT', title: 'Next Point', width: 90, resizable: true },
-        { columnId: 'IVMS_CHECK_DATE', title: 'Last Check Time', width: 150, resizable: true },
-        { columnId: 'IVMS_POINT', title: 'Last IVMS Point', width: 150, resizable: true },
-        { columnId: 'DESTINATION', title: 'Destination', width: 110, resizable: true },
-        { columnId: 'OFFLOAD_POINT', title: 'Offload Point', width: 150, resizable: true },
-        { columnId: 'ACCOMMODATION', title: 'Accommodation', width: 150, resizable: true },   
+        { columnId: 'JOURNEY_PLANE_NO', title: 'Journey Plan No', width: 94, resizable: true, editable: false },
+        { columnId: 'TRACKER', title: 'Tracker', width: 110, resizable: true },
+        { columnId: 'SJM', title: 'Journey Manager', width: 110, resizable: true },
+        { columnId: 'JOURNEY_PLANE_DATE', title: 'Journey Plan Date', width: 114, resizable: false },
+        { columnId: 'DRIVER_NAME', title: 'Driver Name', width: 130, resizable: true },
+        { columnId: 'SCHEDULED_VEHICLE', title: 'Scheduled Vehicle', width: 110, resizable: true },
+        { columnId: 'CARRIER', title: 'Carrier', width: 60, resizable: true },
+        { columnId: 'REMARKS', title: 'Remarks', width: 70, resizable: true },
+        { columnId: 'JP_STATUS', title: 'JP STATUS', width: 90, resizable: true },
+        { columnId: 'NEXT_ARRIVAL_DATE', title: 'Next Arrival Time', width: 108, resizable: true },
+        { columnId: 'NEXT_POINT', title: 'Next Point', width: 70, resizable: true },
+        { columnId: 'IVMS_CHECK_DATE', title: 'Last Check Time', width: 120, resizable: true },
+        { columnId: 'IVMS_POINT', title: 'Last IVMS Point', width: 80, resizable: true },
+        { columnId: 'DESTINATION', title: 'Destination', width: 70, resizable: true },
+        { columnId: 'OFFLOAD_POINT', title: 'Offload Point', width: 90, resizable: true },
+        { columnId: 'ACCOMMODATION', title: 'Accommodation', width: 90, resizable: true },   
     ];
 
     const rows = getRows(filteredRecords);
@@ -229,16 +233,23 @@ const ModifyRecords = () => {
     return (
         <>
             <header className="modify-records-header1">
+                <button className="modify-btn modify-btn-primary" onClick={() => navigate('/main')}>
+                    Main Page
+                </button>
                 <div className="filter-section">
                     <label htmlFor="filterColumnSelect">Filter By:</label>
                     <select
                         id="filterColumnSelect"
                         value={selectedFilterColumn}
-                        onChange={(e) => setSelectedFilterColumn(e.target.value)}
+                        onChange={(e) => {
+                            setSelectedFilterColumn(e.target.value);
+                            setFilterValue(''); // Reset filter value when changing column
+                            applyFilters(originalRecords); // Reapply filters
+                        }}
                     >
                         <option value="JOURNEY_PLANE_NO">Journey Plan No</option>
                         <option value="TRACKER">Tracker</option>
-                        <option value="SJM">Journey Manager</option>
+                        <option value="SJM">SJM</option>
                         <option value="DRIVER_NAME">Driver Name</option>
                         <option value="SCHEDULED_VEHICLE">Scheduled Vehicle</option>
                         <option value="CARRIER">Carrier</option>
@@ -247,7 +258,7 @@ const ModifyRecords = () => {
                         <option value="IVMS_POINT">IVMS Point</option>
                         <option value="DESTINATION">Destination</option>
                         <option value="OFFLOAD_POINT">Offload Point</option>
-                        <option value="ACCOMMODATION">Accommodation</option>        
+                        <option value="ACCOMMODATION">Accommodation</option>
                     </select>
                     <input
                         type="text"
@@ -255,7 +266,7 @@ const ModifyRecords = () => {
                         value={filterValue}
                         onChange={(e) => {
                             setFilterValue(e.target.value);
-                            applyFilters(originalRecords);
+                            applyFilters(originalRecords); // Reapply filters as user types
                         }}
                         className="filter-input"
                     />
@@ -265,7 +276,7 @@ const ModifyRecords = () => {
                     <label htmlFor="statusSelect">Filter By Status:</label>
                     <select id="statusSelect" value={selectedStatus} onChange={(e) => {
                         setSelectedStatus(e.target.value);
-                        applyFilters(originalRecords);
+                        applyFilters(originalRecords); // Reapply filters
                     }}>
                         <option value="IN TRANSIT">IN TRANSIT</option>
                         <option value="CLOSED">CLOSED</option>
@@ -274,6 +285,7 @@ const ModifyRecords = () => {
 
                 <div className="modify-records-footer">
                     <button onClick={handleBatchUpdate}>Save Changes</button>
+                    <button onClick={resetFilters} className="reset-btn">Reset Filters</button> 
                 </div>
             </header>
             {isLoading ? (
